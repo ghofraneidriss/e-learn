@@ -12,6 +12,7 @@
     <module>cours</module>
     <module>eureka</module>
     <module>api_gateway</module>
+    <module>ConfigServer</module>
 </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

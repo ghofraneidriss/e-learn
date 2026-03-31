@@ -17,7 +17,7 @@ public class Cours {
     private String language;
     @Enumerated(EnumType.STRING)
     private Level level;
-    private String price;
+    private Double price;
     private String duration;
     private String instructor;
     private Date created_at;
@@ -30,7 +30,7 @@ public class Cours {
 
     public Cours(String title, String description, String cover,
             String video, String category, String language, Level level,
-            String price, String duration, String instructor, Date created_at,
+            Double price, String duration, String instructor, Date created_at,
             Date updated_at, Status status) {
         this.title = title;
         this.description = description;
@@ -111,11 +111,11 @@ public class Cours {
         this.level = level;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

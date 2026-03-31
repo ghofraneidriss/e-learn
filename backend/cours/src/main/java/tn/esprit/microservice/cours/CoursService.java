@@ -1,5 +1,6 @@
 package tn.esprit.microservice.cours;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,8 +8,14 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CoursService {
 
+    private final CoursClient coursClient;
+
+    public Cours getCoursById(Long id) {
+        return coursClient.getCoursById(id);
+    }
     @Autowired
     private CoursRepository coursRepository;
 
@@ -18,12 +25,12 @@ public class CoursService {
     }
 
     public List<Cours> getAllCours() {
-        return coursRepository.findAll();
+       return coursRepository.findAll();
     }
 
-    public Cours getCoursById(Long id) {
+   /* public Cours getCoursById(Long id) {
         return coursRepository.findById(id).orElse(null);
-    }
+    }*/
 
     public Cours updateCours(Long id, Cours coursDetails) {
         return coursRepository.findById(id).map(cours -> {

@@ -11,6 +11,11 @@ import java.util.List;
 @RequestMapping("/api/cours")
 public class CoursController {
 
+    @GetMapping("/health")
+    public String health() {
+        return "Cours Service is UP";
+    }
+
     @Autowired
     private CoursService coursService;
 
@@ -20,12 +25,12 @@ public class CoursController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Cours>> getAllCours() {
-        return new ResponseEntity<>(coursService.getAllCours(), HttpStatus.OK);
+    public List<Cours> getAllCours() {
+        return coursService.getAllCours();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cours> getCoursById(@PathVariable Long id) {
+    public ResponseEntity<Cours> getCours(@PathVariable Long id) {
         Cours cours = coursService.getCoursById(id);
         return cours != null ? new ResponseEntity<>(cours, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
