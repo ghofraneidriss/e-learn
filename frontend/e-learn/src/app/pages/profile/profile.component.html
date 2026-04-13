@@ -1,0 +1,27 @@
+<div class="profile-container">
+  <div class="profile-card" *ngIf="currentUser">
+    <div class="profile-header">
+      <div class="avatar">{{ getUserInitial() }}</div>
+      <h2>{{ currentUser?.name }}</h2>
+      <span class="role-badge">{{ getRoleLabel() }}</span>
+    </div>
+
+    <div class="profile-details">
+      <div class="detail-row">
+        <span class="label">Nom complet</span>
+        <span class="value">{{ currentUser?.name }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Adresse email</span>
+        <span class="value">{{ currentUser?.email }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Rôle</span>
+        <span class="value">{{ getRoleLabel() }}</span>
+      </div>
+    </div>
+
+    <button class="btn-modify" (click)="editProfile()">Modifier</button>
+    <button class="btn-logout" (click)="logout()">Se déconnecter</button>
+  </div>
+</div>

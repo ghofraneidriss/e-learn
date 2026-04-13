@@ -1,0 +1,174 @@
+/* Profile Card avec le style visuel du Login - RESTE dans le Dashboard */
+
+.profile-container {
+  /* Background dégradé violet/bleu pour la zone de contenu */
+  background: linear-gradient(135deg, #a4b5fd 0%, #b18cf0 100%);
+  min-height: 100vh;
+  padding-top: 50px; /* Espacement du haut pour ne pas coller à la navbar */
+  padding-bottom: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.profile-card {
+  /* Carte beaucoup plus compacte et élégante */
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  /* Avatar plus compact */
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: white;
+  color: #5c6bc0;
+  font-size: 26px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px; /* Réduit l'espace entre avatar et nom */
+  box-shadow: 0 4px 15px rgba(92, 107, 192, 0.25);
+  border: 2px solid #f8f9ff;
+}
+
+.profile-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 6px;
+}
+
+.role-badge {
+  background: linear-gradient(135deg, #5c6bc0, #7b52ab);
+  color: white;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba(92, 107, 192, 0.3);
+}
+
+.profile-details {
+  margin-bottom: 16px;
+}
+
+.detail-row {
+  margin-bottom: 12px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px; /* Taille de police réduite */
+  color: #555;
+  font-weight: 600;
+}
+
+.value {
+  /* Champs plus fins et compacts */
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #e8ecf4;
+  border-radius: 6px;
+  font-size: 13px; /* Taille de police réduite */
+  color: #333;
+  background: rgba(248, 249, 250, 0.7);
+  height: 34px; /* Hauteur réduite pour moins d'épaisseur */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.value:hover {
+  background: rgba(248, 249, 250, 0.9);
+  border-color: #d0d7de;
+}
+
+.btn-modify {
+  /* Bouton plus compact */
+  width: 100%;
+  padding: 10px;
+  background: white;
+  color: #5c6bc0;
+  border: 2px solid #5c6bc0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  height: 36px; /* Hauteur réduite */
+}
+
+.btn-modify:hover {
+  background: #5c6bc0;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(92, 107, 192, 0.3);
+}
+
+.btn-logout {
+  /* Bouton déconnexion plus compact */
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 36px; /* Hauteur réduite */
+}
+
+.btn-logout:hover {
+  background: #f8f9fa;
+  color: #495057;
+  border-color: #adb5bd;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 30px 15px;
+  }
+  
+  .profile-card {
+    margin: 15px auto;
+    padding: 18px;
+    max-width: 100%;
+  }
+  
+  .avatar {
+    width: 55px;
+    height: 55px;
+    font-size: 22px;
+  }
+  
+  .profile-header h2 {
+    font-size: 18px;
+  }
+  
+  .label {
+    font-size: 11px;
+  }
+  
+  .value {
+    font-size: 12px;
+    height: 32px;
+  }
+}

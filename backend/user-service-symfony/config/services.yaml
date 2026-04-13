@@ -1,0 +1,38 @@
+parameters:
+    keycloak.url: '%env(KEYCLOAK_URL)%'
+    keycloak.realm: '%env(KEYCLOAK_REALM)%'
+    keycloak.client_id: '%env(KEYCLOAK_CLIENT_ID)%'
+    keycloak.client_secret: '%env(KEYCLOAK_CLIENT_SECRET)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Document/'
+            - '../src/Kernel.php'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    App\Security\KeycloakAuthenticator:
+        arguments:
+            $keycloakUrl: '%keycloak.url%'
+            $keycloakRealm: '%keycloak.realm%'
+
+    App\Security\KeycloakUserProvider:
+        arguments:
+            $keycloakUrl: '%keycloak.url%'
+            $keycloakRealm: '%keycloak.realm%'
+
+    App\Service\KeycloakService:
+        arguments:
+            $keycloakUrl: '%keycloak.url%'
+            $keycloakRealm: '%keycloak.realm%'
+            $clientId: '%keycloak.client_id%'
+            $clientSecret: '%keycloak.client_secret%'

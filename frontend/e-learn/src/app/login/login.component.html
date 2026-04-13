@@ -1,0 +1,50 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h1 class="brand-name">E-Learn</h1>
+    <p class="brand-sub">Plateforme d'apprentissage</p>
+    
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="email" 
+          name="email"
+          placeholder="admin@elearn.com"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="Enter password"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <button type="submit" class="login-button">Login</button>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </form>
+
+    <p class="register-link">
+      Pas de compte ? <a routerLink="/register">S'inscrire</a>
+    </p>
+
+    <div class="hint-box">
+      <p><strong>Compte admin par défaut:</strong></p>
+      <p>Email: admin@elearn.com</p>
+      <p>Password: admin123</p>
+    </div>
+  </div>
+</div>

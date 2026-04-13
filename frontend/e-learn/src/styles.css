@@ -1,0 +1,143 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background: #f6f8fb;
+	color: #1f2937;
+}
+
+.panel {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	padding: 16px;
+}
+
+.form-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+.form-grid .full {
+	grid-column: 1 / -1;
+}
+
+label {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	font-size: 14px;
+}
+
+input,
+textarea,
+select {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid #ced4da;
+	border-radius: 8px;
+	font: inherit;
+}
+
+button {
+	border: 0;
+	border-radius: 8px;
+	background: #0d6efd;
+	color: #ffffff;
+	padding: 8px 12px;
+	cursor: pointer;
+}
+
+button.secondary {
+	background: #6c757d;
+}
+
+button.danger {
+	background: #dc3545;
+}
+
+.actions {
+	display: flex;
+	gap: 8px;
+}
+
+.success {
+	color: #166534;
+}
+
+.error {
+	color: #b91c1c;
+}
+
+@media (max-width: 768px) {
+	.form-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Isolation stricte des pages d'authentification */
+.auth-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* Dégradé fidèle à l'image 1 */
+  background: linear-gradient(135deg, #a4b5fd 0%, #b18cf0 100%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999;
+  overflow: hidden; /* Empêche le scroll inutile */
+}
+
+/* Layout principal - Assurer que le contenu ne soit pas caché par la sidebar */
+#main-wrapper.show .content-body {
+  margin-left: 280px;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+  min-height: calc(100vh - 80px);
+}
+
+/* Container fluid dans content-body */
+#main-wrapper.show .content-body .container-fluid {
+  padding: 0 15px;
+}
+
+/* Responsive pour la sidebar */
+@media (max-width: 1199px) {
+  #main-wrapper.show .content-body {
+    margin-left: 0;
+  }
+}
+
+/* Assurer que le main-wrapper prend toute la hauteur */
+#main-wrapper {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Suppression des marges forcées par le thème Edumin sur auth pages uniquement */
+.auth-container * {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Protection contre les styles du thème sur les pages d'auth */
+.auth-container .dlabnav,
+.auth-container .header,
+.auth-container #main-wrapper {
+  display: none !important;
+}
+
+/* Assurer que le router-outlet prend toute la place */
+.auth-container router-outlet {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}

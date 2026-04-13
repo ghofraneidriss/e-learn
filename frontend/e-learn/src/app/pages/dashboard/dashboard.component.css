@@ -1,0 +1,54 @@
+.dashboard-content {
+  padding: 30px;
+}
+
+.welcome-banner {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.welcome-banner h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.welcome-banner p {
+  margin: 0;
+  opacity: 0.85;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.stat-card h3 {
+  color: #666;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.stat-num {
+  font-size: 36px;
+  font-weight: 700;
+  color: #667eea;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

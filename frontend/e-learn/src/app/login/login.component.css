@@ -1,0 +1,123 @@
+.auth-card {
+  background: white;
+  padding: 20px 30px !important; /* Réduit le padding pour gagner de la place */
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px; /* Largeur plus fine */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Réduit l'espacement entre les champs */
+.form-group {
+  margin-bottom: 12px !important;
+}
+
+.form-control {
+  height: 40px !important; /* Des inputs moins hauts */
+  font-size: 0.9rem !important;
+}
+
+.brand-name {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.brand-sub {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #333;
+  transition: border-color 0.2s;
+  background: white;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #5c6bc0, #7b52ab);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: opacity 0.2s;
+  height: 40px;
+}
+
+.login-button:hover {
+  opacity: 0.9;
+}
+
+.error-message {
+  background: #fee;
+  color: #c00;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 13px;
+  color: #666;
+}
+
+.register-link a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+.hint-box {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f0f4ff;
+  border: 1px solid #d0d9ff;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.hint-box p {
+  margin: 2px 0;
+  color: #555;
+}
+
+.hint-box strong {
+  color: #667eea;
+}

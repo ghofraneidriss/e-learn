@@ -1,0 +1,16 @@
+<div *ngIf="!showLayout">
+  <router-outlet></router-outlet>
+</div>
+
+<div id="main-wrapper" [class.show]="showLayout">
+  <ng-container *ngIf="showLayout">
+    <app-nav-header></app-nav-header>
+    <app-sidebar></app-sidebar>
+  </ng-container>
+  
+  <div [class.content-body]="showLayout">
+    <div [class.container-fluid]="showLayout">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: elearning-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: elearning_users
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - elearning-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: elearning-keycloak
+    command: start-dev
+    ports:
+      - "8081:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: dev-mem
+    networks:
+      - elearning-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  elearning-network:
+    driver: bridge
