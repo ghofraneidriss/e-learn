@@ -1,0 +1,7 @@
+tn\esprit\microservice\evenement\Entity\Evenement.class
+tn\esprit\microservice\evenement\EvenementApplication.class
+tn\esprit\microservice\evenement\Controller\EvenementRestApi.class
+tn\esprit\microservice\evenement\Service\EvenementService.class
+tn\esprit\microservice\evenement\Client\UtilisateurRestClient.class
+tn\esprit\microservice\evenement\Entity\TypeEvenement.class
+tn\esprit\microservice\evenement\Repository\EvenementRepository.class

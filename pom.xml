@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>tn.esprit.microservice</groupId>
+    <artifactId>e-learn</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    
+    <!-- IMPORTANT : "pom" signifie que ce fichier regroupe plusieurs microservices -->
+    <packaging>pom</packaging>
+
+    <name>E-learn Microservices</name>
+    <description>Projet parent regroupant tous les microservices de la plateforme</description>
+
+    <modules>
+        <!-- Le microservice Cours existant (Dossier "backend") -->
+        <module>backend</module>
+        <!-- Le microservice Evenement -->
+        <module>evenement</module>
+        <!-- Infrastructure -->
+        <module>eureka-server</module>
+        <module>api-gateway</module>
+        <!-- Ajout du Config Server -->
+        <module>config-server</module>
+    </modules>
+
+</project>
