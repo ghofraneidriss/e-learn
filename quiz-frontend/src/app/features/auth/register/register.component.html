@@ -1,0 +1,74 @@
+<div class="auth-wrapper">
+  <div class="card auth-card shadow-lg">
+    <div class="card-body p-5">
+
+      <div class="text-center mb-4">
+        <i class="bi bi-person-plus-fill text-primary" style="font-size: 3rem;"></i>
+        <h2 class="mt-2 fw-bold">Inscription</h2>
+        <p class="text-muted">Créez votre compte</p>
+      </div>
+
+      @if (error) {
+        <div class="alert alert-danger py-2">
+          <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nom d'utilisateur</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" class="form-control" formControlName="username"
+              placeholder="Votre nom"
+              [class.is-invalid]="form.get('username')?.invalid && form.get('username')?.touched">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Email</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+            <input type="email" class="form-control" formControlName="email"
+              placeholder="vous@email.com"
+              [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password" class="form-control" formControlName="password"
+              placeholder="••••••"
+              [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
+          </div>
+          <div class="form-text">Minimum 6 caractères</div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Rôle</label>
+          <select class="form-select" formControlName="role">
+            <option value="ETUDIANT">Étudiant</option>
+            <option value="ENSEIGNANT">Enseignant</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold"
+          [disabled]="form.invalid || loading">
+          @if (loading) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          S'inscrire
+        </button>
+      </form>
+
+      <hr class="my-4">
+      <p class="text-center text-muted mb-0">
+        Déjà un compte ?
+        <a routerLink="/login" class="fw-semibold">Se connecter</a>
+      </p>
+
+    </div>
+  </div>
+</div>

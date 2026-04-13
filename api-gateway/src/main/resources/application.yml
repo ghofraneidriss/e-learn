@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  # Keycloak OAuth2 Resource Server — validates Bearer tokens from Keycloak
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/quiz-realm
+
+  cloud:
+    gateway:
+      # Global CORS — handles preflight before requests reach quiz-service
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods: "GET,POST,PUT,DELETE,PATCH,OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+
+      routes:
+        # Route /api/notifications/** to notification-service (must be before /api/**)
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+
+        # Route all other /api/** to abonnement-service
+        - id: abonnement-service
+          uri: lb://abonnement-service
+          predicates:
+            - Path=/api/**
+
+# Eureka — register gateway and discover other services
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    org.springframework.security: INFO

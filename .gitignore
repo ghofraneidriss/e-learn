@@ -1,0 +1,42 @@
+# Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+.springBeans
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Spring Boot
+*.pid
+application-local.properties
+application-local.yml
+
+# Node / Angular
+quiz-frontend/node_modules/
+quiz-frontend/dist/
+quiz-frontend/.angular/
+
+# H2 / generated
+*.db

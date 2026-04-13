@@ -1,0 +1,53 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Mes offres</h2>
+    <a class="btn btn-primary" routerLink="/enseignant/offres/nouvelle">
+      + Nouvelle offre
+    </a>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="table-responsive" *ngIf="offres.length > 0; else empty">
+    <table class="table table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>Nom</th>
+          <th>Type</th>
+          <th>Prix</th>
+          <th>Durée</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let o of offres">
+          <td><strong>{{ o.nom }}</strong></td>
+          <td>{{ o.type }}</td>
+          <td>{{ o.prix }} €</td>
+          <td>{{ o.dureeEnMois }} mois</td>
+          <td>
+            <span class="badge" [class.bg-success]="o.actif" [class.bg-secondary]="!o.actif">
+              {{ o.actif ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>
+            <a class="btn btn-sm btn-outline-primary me-1" [routerLink]="['/enseignant/offres/edit', o.id]">
+              Modifier
+            </a>
+            <button class="btn btn-sm btn-outline-warning me-1" (click)="toggle(o)">
+              {{ o.actif ? 'Désactiver' : 'Activer' }}
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="delete(o.id)">
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #empty>
+    <p class="text-muted">Vous n'avez créé aucune offre.</p>
+  </ng-template>
+</div>

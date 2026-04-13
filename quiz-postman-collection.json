@@ -1,0 +1,354 @@
+{
+  "info": {
+    "name": "Quiz Service - Full Collection",
+    "_postman_id": "quiz-service-collection",
+    "description": "Complete test collection for the Quiz microservices project",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080" },
+    { "key": "keycloak_url", "value": "http://localhost:8180" },
+    { "key": "notification_url", "value": "http://localhost:8084" },
+    { "key": "prof_token", "value": "" },
+    { "key": "etudiant_token", "value": "" },
+    { "key": "quiz_id", "value": "3" }
+  ],
+  "item": [
+    {
+      "name": "0. Auth - Keycloak",
+      "item": [
+        {
+          "name": "Get Token (prof1 - ENSEIGNANT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('prof_token', json.access_token);",
+                  "console.log('prof1 token saved');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "grant_type", "value": "password" },
+                { "key": "client_id", "value": "quiz-client" },
+                { "key": "username", "value": "prof1@test.com" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "url": "{{keycloak_url}}/realms/quiz-realm/protocol/openid-connect/token"
+          }
+        },
+        {
+          "name": "Get Token (etudiant1 - ETUDIANT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('etudiant_token', json.access_token);",
+                  "console.log('etudiant1 token saved');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "grant_type", "value": "password" },
+                { "key": "client_id", "value": "quiz-client" },
+                { "key": "username", "value": "etudiant1@test.com" },
+                { "key": "password", "value": "123456" }
+              ]
+            },
+            "url": "{{keycloak_url}}/realms/quiz-realm/protocol/openid-connect/token"
+          }
+        },
+        {
+          "name": "GET /api/auth/me (who am I)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" }
+            ],
+            "url": "{{base_url}}/api/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Quizzes - ENSEIGNANT",
+      "item": [
+        {
+          "name": "GET all active quizzes",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" }
+            ],
+            "url": "{{base_url}}/api/quizzes"
+          }
+        },
+        {
+          "name": "POST create quiz",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if(json.id) {",
+                  "  pm.collectionVariables.set('quiz_id', json.id);",
+                  "  console.log('quiz_id saved:', json.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Quiz Java\",\n  \"description\": \"Test de connaissances Java\",\n  \"dureeMinutes\": 30,\n  \"scoreMinimum\": 50,\n  \"questions\": [\n    {\n      \"enonce\": \"Java est un langage compile ?\",\n      \"type\": \"VRAI_FAUX\",\n      \"points\": 2,\n      \"choix\": [\n        {\"texte\": \"Vrai\", \"estCorrect\": false},\n        {\"texte\": \"Faux\", \"estCorrect\": true}\n      ]\n    },\n    {\n      \"enonce\": \"Quelle methode est le point d entree ?\",\n      \"type\": \"QCM\",\n      \"points\": 3,\n      \"choix\": [\n        {\"texte\": \"start()\", \"estCorrect\": false},\n        {\"texte\": \"main()\", \"estCorrect\": true},\n        {\"texte\": \"run()\", \"estCorrect\": false}\n      ]\n    }\n  ]\n}"
+            },
+            "url": "{{base_url}}/api/quizzes"
+          }
+        },
+        {
+          "name": "GET quiz detail with answers (ENSEIGNANT only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" }
+            ],
+            "url": "{{base_url}}/api/quizzes/{{quiz_id}}"
+          }
+        },
+        {
+          "name": "GET mes quizzes (teacher own quizzes)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" }
+            ],
+            "url": "{{base_url}}/api/quizzes/mes-quizzes"
+          }
+        },
+        {
+          "name": "PUT update quiz",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Quiz Java - Updated\",\n  \"description\": \"Version mise a jour\",\n  \"dureeMinutes\": 45,\n  \"scoreMinimum\": 60,\n  \"questions\": [\n    {\n      \"enonce\": \"Java est oriente objet ?\",\n      \"type\": \"VRAI_FAUX\",\n      \"points\": 2,\n      \"choix\": [\n        {\"texte\": \"Vrai\", \"estCorrect\": true},\n        {\"texte\": \"Faux\", \"estCorrect\": false}\n      ]\n    }\n  ]\n}"
+            },
+            "url": "{{base_url}}/api/quizzes/{{quiz_id}}"
+          }
+        },
+        {
+          "name": "PATCH toggle active/inactive",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" }
+            ],
+            "url": "{{base_url}}/api/quizzes/{{quiz_id}}/toggle-active"
+          }
+        },
+        {
+          "name": "DELETE quiz",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" }
+            ],
+            "url": "{{base_url}}/api/quizzes/{{quiz_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Quizzes - ETUDIANT",
+      "item": [
+        {
+          "name": "GET quiz for passage (correct answers hidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{etudiant_token}}" }
+            ],
+            "url": "{{base_url}}/api/quizzes/{{quiz_id}}/passage"
+          }
+        },
+        {
+          "name": "GET quiz detail (403 - ETUDIANT forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{etudiant_token}}" }
+            ],
+            "url": "{{base_url}}/api/quizzes/{{quiz_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Resultats",
+      "item": [
+        {
+          "name": "POST soumettre quiz (ETUDIANT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{etudiant_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quizId\": {{quiz_id}},\n  \"reponses\": {\n    \"3\": [7],\n    \"4\": [9]\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/api/resultats/soumettre",
+            "description": "Keys = question IDs, Values = list of chosen choix IDs. Get IDs from /passage first."
+          }
+        },
+        {
+          "name": "GET mes resultats (ETUDIANT)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{etudiant_token}}" }
+            ],
+            "url": "{{base_url}}/api/resultats/mes-resultats"
+          }
+        },
+        {
+          "name": "GET resultats by quiz (ENSEIGNANT)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" }
+            ],
+            "url": "{{base_url}}/api/resultats/quiz/{{quiz_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Notifications (OpenFeign + RabbitMQ proof)",
+      "item": [
+        {
+          "name": "GET all notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{notification_url}}/api/notifications",
+            "description": "No token needed - internal service. Shows QUIZ_CREATED (Feign) and RESULTAT_SUBMITTED (RabbitMQ)"
+          }
+        },
+        {
+          "name": "GET notifications by user (prof1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{notification_url}}/api/notifications/user/prof1@test.com"
+          }
+        },
+        {
+          "name": "GET notifications by user (etudiant1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{notification_url}}/api/notifications/user/etudiant1@test.com"
+          }
+        },
+        {
+          "name": "GET non-lues (unread) for etudiant1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{notification_url}}/api/notifications/user/etudiant1@test.com/non-lues"
+          }
+        },
+        {
+          "name": "PATCH marquer lu (mark as read)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{notification_url}}/api/notifications/1/marquer-lu"
+          }
+        },
+        {
+          "name": "DELETE notification",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{notification_url}}/api/notifications/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Security Tests",
+      "item": [
+        {
+          "name": "No token - should return 401",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/quizzes"
+          }
+        },
+        {
+          "name": "ETUDIANT tries to create quiz - should return 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{etudiant_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"titre\": \"Hack quiz\", \"description\": \"test\", \"dureeMinutes\": 10, \"scoreMinimum\": 50, \"questions\": []}"
+            },
+            "url": "{{base_url}}/api/quizzes"
+          }
+        },
+        {
+          "name": "ENSEIGNANT tries to submit quiz - should return 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{prof_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"quizId\": 3, \"reponses\": {\"3\": [7]}}"
+            },
+            "url": "{{base_url}}/api/resultats/soumettre"
+          }
+        }
+      ]
+    }
+  ]
+}

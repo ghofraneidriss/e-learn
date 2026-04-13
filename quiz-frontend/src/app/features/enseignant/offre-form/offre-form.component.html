@@ -1,0 +1,121 @@
+<div class="container mt-4" style="max-width: 700px;">
+  <h2 class="mb-4">{{ isEdit ? 'Modifier' : 'Créer' }} une offre</h2>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <!-- Infos de base -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold">Informations générales</div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">Nom de l'offre *</label>
+          <input class="form-control" formControlName="nom" placeholder="Ex: Formation Full-Stack" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" formControlName="description" rows="3"
+            placeholder="Décrivez l'offre..."></textarea>
+        </div>
+        <div class="row g-3">
+          <div class="col-6">
+            <label class="form-label">Type</label>
+            <select class="form-select" formControlName="type">
+              <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Niveau</label>
+            <select class="form-select" formControlName="niveau">
+              <option value="DEBUTANT">🟢 Débutant</option>
+              <option value="INTERMEDIAIRE">🟡 Intermédiaire</option>
+              <option value="AVANCE">🔴 Avancé</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarification -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold">Tarification & Durée</div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-6">
+            <label class="form-label">Prix (€) *</label>
+            <div class="input-group">
+              <input class="form-control" type="number" formControlName="prix" min="0" step="0.01" />
+              <span class="input-group-text">€</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Durée *</label>
+            <div class="input-group">
+              <input class="form-control" type="number" formControlName="dureeEnMois" min="1" />
+              <span class="input-group-text">mois</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold">Contenu inclus</div>
+      <div class="card-body">
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label class="form-label">Nombre de cours</label>
+            <input class="form-control" type="number" formControlName="nombreCoursInclus" min="0" />
+          </div>
+          <div class="col-6">
+            <label class="form-label">Nombre de quiz</label>
+            <input class="form-control" type="number" formControlName="nombreQuizInclus" min="0" />
+          </div>
+        </div>
+
+        <!-- Matières -->
+        <div class="mb-3">
+          <label class="form-label">Matières</label>
+          <div class="d-flex gap-2 mb-2">
+            <input class="form-control form-control-sm" [(ngModel)]="newMatiere" [ngModelOptions]="{standalone:true}"
+              placeholder="Ex: JavaScript, Python..." (keydown.enter)="addMatiere()" />
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="addMatiere()">+</button>
+          </div>
+          <div class="d-flex flex-wrap gap-1">
+            <span *ngFor="let m of matieres; let i = index"
+              class="badge bg-primary bg-opacity-10 text-primary border border-primary px-2 py-1">
+              {{ m }}
+              <i class="bi bi-x ms-1" style="cursor:pointer" (click)="removeMatiere(i)"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Avantages -->
+        <div>
+          <label class="form-label">Avantages inclus</label>
+          <div class="d-flex gap-2 mb-2">
+            <input class="form-control form-control-sm" [(ngModel)]="newAvantage" [ngModelOptions]="{standalone:true}"
+              placeholder="Ex: Accès illimité, Certificat..." (keydown.enter)="addAvantage()" />
+            <button type="button" class="btn btn-sm btn-outline-success" (click)="addAvantage()">+</button>
+          </div>
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let a of avantages; let i = index" class="d-flex align-items-center gap-2 mb-1">
+              <i class="bi bi-check-circle-fill text-success"></i>
+              <span class="small">{{ a }}</span>
+              <i class="bi bi-x text-danger ms-auto" style="cursor:pointer" (click)="removeAvantage(i)"></i>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary px-4" [disabled]="form.invalid">
+        <i class="bi bi-save me-1"></i>{{ isEdit ? 'Mettre à jour' : "Créer l'offre" }}
+      </button>
+      <a class="btn btn-outline-secondary" routerLink="/enseignant/offres">Annuler</a>
+    </div>
+  </form>
+</div>

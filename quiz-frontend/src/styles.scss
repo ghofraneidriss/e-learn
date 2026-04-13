@@ -1,0 +1,131 @@
+// Override Bootstrap primary color
+$primary: #4f46e5;
+
+body {
+  background-color: #f8f9fa;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+// ── Auth pages ────────────────────────────────────────────────────────────────
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  padding: 2rem 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  border-radius: 1rem;
+  border: none;
+}
+
+// ── Quiz cards (list) ─────────────────────────────────────────────────────────
+.quiz-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 0.75rem;
+  border: 1px solid #e9ecef;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+  }
+}
+
+// ── Quiz passage ──────────────────────────────────────────────────────────────
+.quiz-header {
+  background: white;
+  top: 0;
+  z-index: 100;
+  border-radius: 0.75rem;
+}
+
+.question-card {
+  border-radius: 0.75rem;
+  transition: border-color 0.2s;
+
+  &.answered {
+    border-color: #4f46e5 !important;
+  }
+}
+
+.question-num {
+  width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
+  text-align: center;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.choices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.choice-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #dee2e6;
+  border-radius: 0.5rem;
+  text-align: left;
+  background: white;
+  transition: all 0.15s;
+  font-size: 0.95rem;
+  width: 100%;
+
+  &:hover {
+    border-color: #4f46e5;
+    background: #f8f7ff;
+  }
+
+  &.selected {
+    border-color: #4f46e5;
+    background: #ede9fe;
+    color: #4f46e5;
+    font-weight: 600;
+  }
+}
+
+.choice-indicator {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: 2px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  transition: all 0.15s;
+
+  .selected & {
+    border-color: #4f46e5;
+    background: #4f46e5;
+    color: white;
+  }
+}
+
+// ── Score page ────────────────────────────────────────────────────────────────
+.stat-box {
+  padding: 1rem 2rem;
+  border: 1px solid #e9ecef;
+  border-radius: 0.75rem;
+  background: #f8f9fa;
+  text-align: center;
+}
+
+// ── Navbar ────────────────────────────────────────────────────────────────────
+.navbar {
+  background: #4f46e5 !important;
+}
+
+.navbar-brand {
+  font-size: 1.3rem;
+}

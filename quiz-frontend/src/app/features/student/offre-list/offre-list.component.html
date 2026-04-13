@@ -1,0 +1,196 @@
+<div class="container mt-4">
+  <div class="text-center mb-5">
+    <h2 class="fw-bold">Nos offres de formation</h2>
+    <p class="text-muted">Choisissez le plan qui correspond à vos objectifs</p>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible">
+    <i class="bi bi-check-circle-fill me-2"></i>{{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage=''"></button>
+  </div>
+  <div *ngIf="error && !showModal" class="alert alert-danger">{{ error }}</div>
+
+  <div class="row g-4 justify-content-center">
+    <div class="col-md-4" *ngFor="let offre of offres">
+      <div class="card border-0 shadow h-100 position-relative overflow-hidden"
+           [style.border-top]="'4px solid ' + typeColor(offre.type)">
+
+        <!-- Type badge -->
+        <div class="position-absolute top-0 end-0 m-2">
+          <span class="badge text-white px-3 py-2 rounded-pill"
+                [style.background-color]="typeColor(offre.type)">
+            {{ offre.type }}
+          </span>
+        </div>
+
+        <div class="card-body d-flex flex-column pt-4">
+          <!-- Header -->
+          <h4 class="fw-bold mb-1">{{ offre.nom }}</h4>
+          <span class="text-muted small mb-3">{{ niveauLabel(offre.niveau) }}</span>
+
+          <!-- Price -->
+          <div class="mb-3">
+            <span class="display-6 fw-bold" [style.color]="typeColor(offre.type)">{{ offre.prix }}€</span>
+            <span class="text-muted">/ {{ offre.dureeEnMois }} mois</span>
+          </div>
+
+          <p class="text-muted small mb-3">{{ offre.description }}</p>
+
+          <!-- Stats row -->
+          <div class="d-flex gap-3 mb-3">
+            <div class="text-center p-2 rounded" style="background:#f8f9fa; flex:1">
+              <div class="fw-bold text-primary">{{ offre.nombreCoursInclus ?? 0 }}</div>
+              <div class="text-muted" style="font-size:11px">Cours</div>
+            </div>
+            <div class="text-center p-2 rounded" style="background:#f8f9fa; flex:1">
+              <div class="fw-bold text-success">{{ offre.nombreQuizInclus ?? 0 }}</div>
+              <div class="text-muted" style="font-size:11px">Quiz</div>
+            </div>
+            <div class="text-center p-2 rounded" style="background:#f8f9fa; flex:1">
+              <div class="fw-bold text-warning">{{ offre.matieres?.length ?? 0 }}</div>
+              <div class="text-muted" style="font-size:11px">Matières</div>
+            </div>
+          </div>
+
+          <!-- Matieres chips -->
+          <div class="mb-3" *ngIf="offre.matieres?.length">
+            <div class="d-flex flex-wrap gap-1">
+              <span *ngFor="let m of offre.matieres"
+                    class="badge rounded-pill bg-light text-dark border" style="font-size:11px">
+                {{ m }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Avantages -->
+          <ul class="list-unstyled mb-4 flex-grow-1" *ngIf="offre.avantages?.length">
+            <li *ngFor="let a of offre.avantages" class="mb-1 small">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>{{ a }}
+            </li>
+          </ul>
+
+          <!-- CTA Button -->
+          <button class="btn text-white w-100 py-2 fw-semibold mt-auto"
+                  [style.background-color]="typeColor(offre.type)"
+                  (click)="openPayment(offre)">
+            <i class="bi bi-lightning-fill me-1"></i>S'abonner maintenant
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="offres.length === 0 && !error" class="text-center text-muted py-5">
+      <i class="bi bi-inbox fs-1"></i>
+      <p class="mt-2">Aucune offre disponible pour le moment.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal-backdrop fade show" *ngIf="showModal" style="background:rgba(0,0,0,0.6)"></div>
+<div class="modal d-block" *ngIf="showModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+
+      <!-- Success screen -->
+      <div *ngIf="paymentDone" class="text-center p-5">
+        <div class="mb-3" style="font-size:60px">✅</div>
+        <h4 class="fw-bold text-success">Paiement réussi !</h4>
+        <p class="text-muted">Votre abonnement à <strong>{{ selectedOffre?.nom }}</strong> est actif.</p>
+        <p class="small text-muted">{{ successMessage }}</p>
+        <button class="btn btn-success px-4" (click)="closeModal()">Fermer</button>
+      </div>
+
+      <!-- Payment form -->
+      <div *ngIf="!paymentDone">
+        <div class="modal-header border-0 pb-0">
+          <div>
+            <h5 class="modal-title fw-bold">Finaliser l'abonnement</h5>
+            <p class="text-muted small mb-0">{{ selectedOffre?.nom }} —
+              <strong>{{ selectedOffre?.prix }}€</strong> / {{ selectedOffre?.dureeEnMois }} mois
+            </p>
+          </div>
+          <button class="btn-close" (click)="closeModal()" [disabled]="paying"></button>
+        </div>
+
+        <div class="modal-body">
+          <div *ngIf="error" class="alert alert-danger py-2 small">{{ error }}</div>
+
+          <!-- Titulaire -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nom du titulaire</label>
+            <input class="form-control" [(ngModel)]="nomTitulaire" placeholder="Jean Dupont" [disabled]="paying" />
+          </div>
+
+          <!-- Méthode de paiement -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Méthode de paiement</label>
+            <div class="d-flex gap-2">
+              <button *ngFor="let m of [['CARTE_BANCAIRE','💳 Carte'], ['PAYPAL','🅿️ PayPal'], ['VIREMENT','🏦 Virement']]"
+                class="btn btn-sm flex-fill"
+                [class.btn-primary]="methodePaiement === m[0]"
+                [class.btn-outline-secondary]="methodePaiement !== m[0]"
+                (click)="setMethode(m[0])"
+                [disabled]="paying">
+                {{ m[1] }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Carte bancaire fields -->
+          <div *ngIf="methodePaiement === 'CARTE_BANCAIRE'">
+            <div class="p-3 rounded mb-3" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-radius:12px!important">
+              <div class="small opacity-75 mb-2">Numéro de carte</div>
+              <div class="fs-5 fw-bold letter-spacing">{{ numeroCarte || '•••• •••• •••• ••••' }}</div>
+              <div class="d-flex justify-content-between mt-2 small opacity-75">
+                <span>{{ nomTitulaire || 'TITULAIRE' }}</span>
+                <span>{{ expiryCarte || 'MM/AA' }}</span>
+              </div>
+            </div>
+            <div class="mb-2">
+              <input class="form-control" placeholder="1234 5678 9012 3456"
+                     [value]="numeroCarte" (input)="onCarteInput($event)"
+                     maxlength="19" [disabled]="paying" />
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                <input class="form-control" placeholder="MM/AA" [(ngModel)]="expiryCarte"
+                       maxlength="5" [disabled]="paying" />
+              </div>
+              <div class="col-6">
+                <input class="form-control" placeholder="CVV" [(ngModel)]="cvv" type="password"
+                       maxlength="3" [disabled]="paying" />
+              </div>
+            </div>
+          </div>
+
+          <!-- PayPal -->
+          <div *ngIf="methodePaiement === 'PAYPAL'" class="mb-2">
+            <input class="form-control" placeholder="Email PayPal" [(ngModel)]="paypalEmail"
+                   type="email" [disabled]="paying" />
+          </div>
+
+          <!-- Virement -->
+          <div *ngIf="methodePaiement === 'VIREMENT'" class="alert alert-info small mt-2 mb-0">
+            <strong>Virement bancaire</strong><br>
+            IBAN : FR76 1234 5678 9012 3456 789<br>
+            Référence : <strong>{{ selectedOffre?.nom }}</strong>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 pt-0">
+          <button class="btn btn-outline-secondary" (click)="closeModal()" [disabled]="paying">
+            Annuler
+          </button>
+          <button class="btn btn-primary px-4" (click)="confirmerPaiement()"
+                  [disabled]="paying || !isFormValid()">
+            <span *ngIf="paying" class="spinner-border spinner-border-sm me-2"></span>
+            <span *ngIf="!paying"><i class="bi bi-lock-fill me-1"></i></span>
+            {{ paying ? 'Traitement...' : 'Payer ' + selectedOffre?.prix + '€' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
