@@ -1,0 +1,78 @@
+<section class="page-header page-header--bg-two" data-jarallax="" data-speed="0.3" data-imgposition="50% -100%" *ngIf="!loading && course">
+    <div class="page-header__bg jarallax-img"></div>
+    <div class="page-header__overlay"></div>
+    <div class="container text-center">
+        <h2 class="page-header__title">{{ course.title }}</h2>
+        <ul class="page-header__breadcrumb list-unstyled">
+            <li><a routerLink="/">Home</a></li>
+            <li><a routerLink="/courses">Courses</a></li>
+            <li><span>{{ course.category }}</span></li>
+        </ul>
+    </div>
+</section>
+
+<section class="course-details" *ngIf="!loading && course">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-8">
+                <div class="course-details__thumb">
+                    <img [src]="course.cover" [alt]="course.title">
+                </div>
+                <div class="course-details__meta">
+                    <div class="course-details__meta__author">
+                        <img src="/frontoffice/eduact-html/assets/images/course/author-7.png" alt="author">
+                        <h5 class="course-details__meta__name">{{ course.instructor }}</h5>
+                        <p class="course-details__meta__designation">Instructor</p>
+                    </div>
+                    <div class="course-details__meta__cats"><a routerLink="/courses">{{ course.category }}</a></div>
+                    <div class="course-details__meta__ratings">
+                        <span class="icon-star"></span><span class="icon-star"></span><span class="icon-star"></span><span class="icon-star"></span><span class="icon-star"></span>
+                        <div class="course-details__meta__ratings__reviews">(25 Reviews)</div>
+                    </div>
+                    <div class="course-details__meta__price">${{ course.price }}</div>
+                </div>
+                <h3 class="course-details__title">{{ course.title }}</h3>
+                
+                <div class="course-details__overview mt-4">
+                    <p class="course-details__overview__text">{{ course.description }}</p>
+                    
+                    <div class="ai-summary-box mt-5 p-4 bg-light border-start border-4 border-primary" *ngIf="summary">
+                        <h4 class="mb-3"><i class="fas fa-magic text-primary"></i> AI Intelligent Summary</h4>
+                        <p class="mb-0 italic">{{ summary }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4">
+                <div class="course-details__sidebar">
+                    <div class="course-details__sidebar__item">
+                        <h3 class="course-details__sidebar__title">Course Features</h3>
+                        <ul class="course-details__sidebar__lists clerfix">
+                            <li><i class="icon-history"></i>Duration:<span>{{ course.duration }}</span></li>
+                            <li><i class="icon-book"></i>Lessons:<span>15 Lessons</span></li>
+                            <li><i class="icon-reading"></i>Students:<span>Max 20</span></li>
+                            <li><i class="icon-logical-thinking"></i>Skill Level<span>{{ course.level }}</span></li>
+                            <li><i class="icon-Digital-marketing"></i>Language:<span>{{ course.language }}</span></li>
+                        </ul>
+                        <a href="javascript:void(0);" class="eduact-btn eduact-btn-second w-100 mt-4">
+                            <span class="eduact-btn__curve"></span>Enroll Now<i class="icon-arrow"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Loading State -->
+<div class="preloader" *ngIf="loading">
+    <div class="preloader__image" style="background-image: url(/frontoffice/eduact-html/assets/images/loader.png);"></div>
+</div>
+
+<!-- Error State -->
+<div class="container mt-5 pt-5 text-center" *ngIf="errorMsg">
+    <div class="alert alert-danger">
+        {{ errorMsg }}
+    </div>
+    <a routerLink="/courses" class="btn btn-primary mt-3">Back to Courses</a>
+</div>

@@ -1,0 +1,29 @@
+<section class="login-page">
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>E-Learning Platform</h1>
+        <p>Connectez-vous pour accéder à votre espace</p>
+      </div>
+
+      <div class="login-body">
+        <button 
+          type="button" 
+          class="login-button" 
+          (click)="login()" 
+          [disabled]="loading">
+          <span *ngIf="!loading">Se connecter avec Keycloak</span>
+          <span *ngIf="loading" class="spinner">Connexion en cours...</span>
+        </button>
+
+        <div class="login-info">
+          <p>Utilisez vos identifiants Keycloak pour vous connecter</p>
+        </div>
+      </div>
+
+      <div class="login-footer">
+        <p>Plateforme sécurisée par Keycloak</p>
+      </div>
+    </div>
+  </div>
+</section>

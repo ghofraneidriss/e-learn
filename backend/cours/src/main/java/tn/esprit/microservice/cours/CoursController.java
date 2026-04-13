@@ -71,7 +71,7 @@ public class CoursController {
     }
     @GetMapping("/top")
     public List<Cours> topCourses() {
-        return coursRepository.findTop5ByOrderByCreated_atDesc();
+        return coursRepository.findTop5RecentCourses();
     }
     @PutMapping("/{id}/status")
     public Cours updateStatus(@PathVariable Long id, @RequestParam Status status) {

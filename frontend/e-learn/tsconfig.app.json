@@ -7,9 +7,10 @@
     "types": []
   },
   "include": [
-    "src/**/*.ts"
+    "backoffice/src/**/*.ts",
+    "backoffice/src/**/*.d.ts"
   ],
   "exclude": [
-    "src/**/*.spec.ts"
+    "backoffice/src/**/*.spec.ts"
   ]
 }

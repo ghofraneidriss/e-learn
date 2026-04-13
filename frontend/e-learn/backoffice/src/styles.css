@@ -1,0 +1,12 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #fff;
+  min-height: 100vh;
+  font-family: 'Urbanist', 'Segoe UI', sans-serif;
+  color: #111;
+}

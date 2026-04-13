@@ -13,6 +13,6 @@ public interface CoursRepository extends JpaRepository<Cours, Long> {
             "(:category IS NULL OR c.category = :category) AND " +
             "(:level IS NULL OR c.level = :level)")
     List<Cours> findByFilters(String title, String category, Level level);
-    List<Cours> findTop5ByOrderByCreated_atDesc();
-
+    @Query(value = "SELECT * FROM cours ORDER BY created_at DESC LIMIT 5", nativeQuery = true)
+    List<Cours> findTop5RecentCourses();
 }

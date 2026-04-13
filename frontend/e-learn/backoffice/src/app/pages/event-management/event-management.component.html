@@ -1,0 +1,217 @@
+<main class="event-page">
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Microservice Événement</p>
+      <h1>Orchestrez les sessions et les règles métiers avancées</h1>
+      <p>Contrôlez les dates, la capacité, les inscriptions et les statistiques de chaque événement depuis ce tableau de bord.</p>
+    </div>
+    <div class="hero-metrics">
+      <div class="metric">
+        <span class="value">{{ events.length }}</span>
+        <span class="caption">Événements</span>
+      </div>
+      <div class="metric">
+        <span class="value">{{ availableEvents.length }}</span>
+        <span class="caption">Places disponibles</span>
+      </div>
+      <div class="metric">
+        <span class="value">{{ popularEvents.length }}</span>
+        <span class="caption">Populaires</span>
+      </div>
+    </div>
+  </header>
+
+  <p class="status" *ngIf="statusMessage">{{ statusMessage }}</p>
+
+  <section class="card table-card">
+    <div class="section-header">
+      <h2>Catalogue événementiel</h2>
+      <span>{{ events.length }} résultats</span>
+    </div>
+    <div class="table-wrapper" *ngIf="events.length; else emptyState">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom &amp; description</th>
+            <th>Type</th>
+            <th>Début</th>
+            <th>Capacité</th>
+            <th>Inscrits</th>
+            <th>Lieu</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let event of events">
+            <td>{{ event.id }}</td>
+            <td class="event-details">
+              <strong>{{ event.nom }}</strong>
+              <p>{{ event.description }}</p>
+            </td>
+            <td>{{ event.type }}</td>
+            <td>{{ event.date | date:'medium' }}</td>
+            <td>{{ event.capaciteMax }}</td>
+            <td>{{ event.participantsIds?.length ?? 0 }}</td>
+            <td>{{ event.lieu }}</td>
+            <td class="actions">
+              <button type="button" (click)="setForEdit(event)">Modifier</button>
+              <button type="button" class="danger" (click)="deleteEvent(event)">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ng-template #emptyState>
+      <p class="empty-state">La base n’a aucun événement enregistré pour le moment.</p>
+    </ng-template>
+  </section>
+
+  <section class="flex-grid">
+    <article class="card form-card">
+      <h3>{{ selectedEvent ? 'Mettre à jour l’événement' : 'Créer un nouvel événement' }}</h3>
+      <form [formGroup]="eventForm" class="form-grid" (ngSubmit)="saveEvent()">
+        <label>
+          <span>Nom</span>
+          <input formControlName="nom" placeholder="Titre de l’événement" />
+        </label>
+        <label>
+          <span>Description</span>
+          <textarea formControlName="description" rows="2" placeholder="Contexte et objectifs"></textarea>
+        </label>
+        <label>
+          <span>Type</span>
+          <select formControlName="type">
+            <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
+          </select>
+        </label>
+        <label>
+          <span>Date de début</span>
+          <input type="datetime-local" formControlName="date" />
+        </label>
+        <label>
+          <span>Date de fin (optionnelle)</span>
+          <input type="datetime-local" formControlName="dateFin" />
+        </label>
+        <label>
+          <span>Lieu</span>
+          <input formControlName="lieu" placeholder="Salle ou lien en ligne" />
+        </label>
+        <label>
+          <span>Capacité maximale</span>
+          <input type="number" formControlName="capaciteMax" min="1" />
+        </label>
+        <label>
+          <span>ID du formateur</span>
+          <input type="number" formControlName="formateurId" min="1" />
+        </label>
+        <div class="form-actions">
+          <button type="submit" [disabled]="eventForm.invalid || isSaving">
+            {{ selectedEvent ? 'Mettre à jour' : 'Créer' }}
+          </button>
+          <button type="button" class="ghost" (click)="resetForm()" [disabled]="isSaving">Réinitialiser</button>
+        </div>
+      </form>
+    </article>
+
+    <article class="card stats-card">
+      <h3>Opérations avancées</h3>
+      <div class="stat-grid">
+        <div>
+          <p>Événements populaires</p>
+          <strong>{{ popularEvents.length }}</strong>
+        </div>
+        <div>
+          <p>Places disponibles</p>
+          <strong>{{ availableEvents.length }}</strong>
+        </div>
+        <div>
+          <p>Dernier formateur interrogé</p>
+          <strong>{{ statResult ?? '-' }}</strong>
+        </div>
+      </div>
+      <form [formGroup]="statForm" class="inline-form" (ngSubmit)="fetchStats()">
+        <input type="number" formControlName="formateurId" placeholder="ID formateur" />
+        <button type="submit" [disabled]="statForm.invalid">Chiffre</button>
+      </form>
+      <div class="mini-list" *ngIf="popularEvents.length">
+        <p class="mini-title">Top événements</p>
+        <ul>
+          <li *ngFor="let event of popularEvents">
+            {{ event.nom }} — {{ event.participantsIds?.length ?? 0 }} inscrits
+          </li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <section class="card scenario-card">
+    <h3>Scénarios métiers</h3>
+    <div class="scenario-grid">
+      <form [formGroup]="searchForm" (ngSubmit)="searchEvents()">
+        <h4>Recherche ciblée</h4>
+        <div class="inline-fields">
+          <select formControlName="type">
+            <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
+          </select>
+          <input formControlName="keyword" placeholder="Mot-clé" />
+        </div>
+        <button type="submit" class="ghost">Lancer</button>
+      </form>
+
+      <form [formGroup]="conflictForm" (ngSubmit)="checkConflicts()">
+        <h4>Conflits de planning</h4>
+        <div class="inline-fields">
+          <input type="number" formControlName="formateurId" placeholder="ID formateur" />
+          <input type="datetime-local" formControlName="startDate" />
+          <input type="datetime-local" formControlName="endDate" />
+        </div>
+        <button type="submit" class="ghost">Vérifier</button>
+      </form>
+
+      <form [formGroup]="participantForm" (ngSubmit)="loadParticipantEvents()">
+        <h4>Filtres participant</h4>
+        <input type="number" formControlName="userId" placeholder="ID utilisateur" />
+        <button type="submit" class="ghost">Filtrer</button>
+      </form>
+    </div>
+
+    <div class="results">
+      <div *ngIf="searchResults.length">
+        <p class="result-title">Résultats par type ou mot-clé</p>
+        <ul>
+          <li *ngFor="let event of searchResults">
+            {{ event.nom }} — {{ event.type }} ({{ event.date | date:'short' }})
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="conflictEvents.length">
+        <p class="result-title">Conflits détectés</p>
+        <ul>
+          <li *ngFor="let event of conflictEvents">
+            {{ event.nom }} — {{ event.date | date:'short' }} / {{ event.lieu }}
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="participantEvents.length">
+        <p class="result-title">Événements de l’utilisateur</p>
+        <ul>
+          <li *ngFor="let event of participantEvents">{{ event.nom }} — {{ event.type }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="card registration-card">
+    <h3>Gestion des inscriptions</h3>
+    <form [formGroup]="registerForm" class="inline-form">
+      <input type="number" formControlName="eventId" placeholder="ID événement" />
+      <input type="number" formControlName="userId" placeholder="ID utilisateur" />
+      <div class="inline-actions">
+        <button type="button" (click)="registerUser()" [disabled]="registerForm.invalid">Inscrire</button>
+        <button type="button" class="ghost" (click)="unregisterUser()" [disabled]="registerForm.invalid">Désinscrire</button>
+      </div>
+    </form>
+    <p class="status" *ngIf="registerMessage">{{ registerMessage }}</p>
+  </section>
+</main>

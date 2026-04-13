@@ -20,13 +20,14 @@
         }
       },
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "backoffice/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/main.ts",
+            "browser": "backoffice/src/main.ts",
+            "index": "backoffice/src/index.html",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -40,12 +41,17 @@
               },
               {
                 "glob": "**/*",
+                "input": "frontoffice/bracketweb.com/eduact-html",
+                "output": "/frontoffice/eduact-html"
+              },
+              {
+                "glob": "**/*",
                 "input": "xhtml",
                 "output": "/xhtml"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "backoffice/src/styles.css"
             ]
           },
           "configurations": {

@@ -1,0 +1,74 @@
+<main class="front-event-page">
+  <section class="banner">
+    <div>
+      <p class="eyebrow">Evenementiel connecté</p>
+      <h1>Rejoignez les sessions qui vous inspirent</h1>
+      <p>Filtrez les événements par type, consultez les places restantes et inscrivez-vous directement depuis votre interface.</p>
+    </div>
+    <div class="banner-pill">
+      <p>Événements actifs</p>
+      <strong>{{ filteredEvents.length }}</strong>
+    </div>
+  </section>
+
+  <section class="card featured-card" *ngIf="featured.length">
+    <header>
+      <h2>Pépites du moment</h2>
+      <p>Événements à fort taux d’inscription.</p>
+    </header>
+    <div class="featured-grid">
+      <article *ngFor="let event of featured">
+        <div class="tag">{{ event.type }}</div>
+        <h3>{{ event.nom }}</h3>
+        <p>{{ event.description }}</p>
+        <p class="meta">{{ event.date | date:'fullDate' }} · {{ event.lieu }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="card filter-card">
+    <form [formGroup]="searchForm" (ngSubmit)="applyFilter()">
+      <div class="fields">
+        <select formControlName="type">
+          <option *ngFor="let type of eventTypes" [value]="type">
+            {{ type === 'ALL' ? 'Tous les types' : type }}
+          </option>
+        </select>
+        <input formControlName="keyword" placeholder="Mot-clé (ex. hackathon, data)" />
+        <button type="submit">Filtrer</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card list-card">
+    <header>
+      <div>
+        <h2>Calendrier</h2>
+        <p>Places encore disponibles : {{ availableEvents.length }}</p>
+      </div>
+      <span class="pill">Tous les événements</span>
+    </header>
+    <div class="event-grid">
+      <article *ngFor="let event of filteredEvents">
+        <div class="tag">{{ event.type }}</div>
+        <h3>{{ event.nom }}</h3>
+        <p>{{ event.description }}</p>
+        <p class="meta">{{ event.date | date:'medium' }}</p>
+        <p class="meta">Capacité : {{ event.participantsIds?.length ?? 0 }}/{{ event.capaciteMax }}</p>
+        <p class="venue">Lieu : {{ event.lieu }}</p>
+        <div class="card-actions" *ngIf="event.id">
+          <button type="button" (click)="registerToEvent(event.id)">S'inscrire</button>
+          <button type="button" class="ghost" (click)="unregisterFromEvent(event.id)">Se désinscrire</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="card registration-card">
+    <h3>Votre ID de participation</h3>
+    <form [formGroup]="registrationForm">
+      <input type="number" formControlName="userId" placeholder="Entrez votre ID utilisateur" />
+    </form>
+    <p class="status" *ngIf="message">{{ message }}</p>
+  </section>
+</main>

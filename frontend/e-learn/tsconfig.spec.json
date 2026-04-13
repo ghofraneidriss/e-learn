@@ -9,7 +9,7 @@
     ]
   },
   "include": [
-    "src/**/*.d.ts",
-    "src/**/*.ts"
+    "backoffice/src/**/*.d.ts",
+    "backoffice/src/**/*.ts"
   ]
 }
