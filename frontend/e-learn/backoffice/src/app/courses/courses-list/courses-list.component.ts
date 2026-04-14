@@ -11,12 +11,16 @@ import { Course } from '../models/course.model';
 export class CoursesListComponent implements OnInit {
   courses: Course[] = [];
   topCourses: Course[] = [];
-  errorMsg: string = '';
   loading: boolean = true;
+  errorMessage: string = '';
 
-  constructor(private courseService: CourseService) {}
+  constructor(private courseService: CourseService) { }
 
   ngOnInit(): void {
+    this.refreshData();
+  }
+
+  refreshData() {
     this.fetchTopCourses();
     this.fetchAllCourses();
   }
@@ -24,7 +28,7 @@ export class CoursesListComponent implements OnInit {
   fetchTopCourses(): void {
     this.courseService.getTopCourses().subscribe({
       next: (data) => {
-        this.topCourses = data || [];
+        this.topCourses = (data || []).slice(0, 5);
       },
       error: (err) => {
         console.error('Failed to fetch top courses', err);
@@ -38,13 +42,17 @@ export class CoursesListComponent implements OnInit {
       next: (data) => {
         this.courses = data || [];
         this.loading = false;
-        this.errorMsg = '';
+        this.errorMessage = '';
       },
       error: (err) => {
-        this.errorMsg = 'Failed to load courses. Please try again later.';
+        this.errorMessage = 'Failed to load courses. Please check if the backend is running.';
         this.loading = false;
         console.error('Failed to fetch all courses', err);
       }
     });
+  }
+
+  onCourseCreated() {
+    this.refreshData();
   }
 }

@@ -1,17 +1,18 @@
 <div class="page-wrapper">
-    <app-header></app-header>
+    <app-header *ngIf="!isAdminRoute"></app-header>
 
     <router-outlet></router-outlet>
 
-    <app-footer></app-footer>
+    <app-footer *ngIf="!isAdminRoute"></app-footer>
 </div>
 
-<div class="mobile-nav__wrapper">
+<div class="mobile-nav__wrapper" *ngIf="!isAdminRoute">
     <div class="mobile-nav__overlay mobile-nav__toggler"></div>
     <div class="mobile-nav__content">
         <span class="mobile-nav__close mobile-nav__toggler"><i class="fa fa-times"></i></span>
         <div class="logo-box">
-            <a routerLink="/"><img src="/frontoffice/eduact-html/assets/images/logo-light.png" width="183" height="48" alt="eduact"></a>
+            <a routerLink="/"><img src="/frontoffice/eduact-html/assets/images/logo-light.png" width="183" height="48"
+                    alt="eduact"></a>
         </div>
         <div class="mobile-nav__container"></div>
     </div>

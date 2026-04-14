@@ -1,23 +1,39 @@
 <div class="course-two__item">
     <div class="course-two__thumb">
-        <img [src]="course.cover" [alt]="course.title">
+        <img [src]="imageUrl" [alt]="course.title" style="height: 230px; object-fit: cover; width: 100%;">
+        <div class="course-video-overlay" *ngIf="videoUrl">
+            <video controls [src]="videoUrl" class="w-100"></video>
+        </div>
         <a class="course-two__like" href="javascript:void(0);"><span class="icon-like"></span></a>
-        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 353 177">
-            <path d="M37 0C16.5655 0 0 16.5655 0 37V93.4816C0 103.547 4.00259 113.295 11.7361 119.737C54.2735 155.171 112.403 177 176.496 177C240.589 177 298.718 155.171 341.261 119.737C348.996 113.295 353 103.546 353 93.4795V37C353 16.5655 336.435 0 316 0H37Z"></path>
-        </svg>
     </div><!-- /.course-thumb -->
     <div class="course-two__content">
         <div class="course-two__time">{{ course.duration }}</div>
         <div class="course-two__ratings">
-            <span class="icon-star"></span><span class="icon-star"></span><span class="icon-star"></span><span class="icon-star"></span><span class="icon-star"></span>
+            <span class="icon-star"></span><span class="icon-star"></span><span class="icon-star"></span><span
+                class="icon-star"></span><span class="icon-star"></span>
             <div class="course-two__ratings__reviews">(25 Reviews)</div>
         </div>
         <h3 class="course-two__title">
             <a [routerLink]="['/courses', course.id]">{{ course.title }}</a>
         </h3>
+
+        <p class="course-desc" *ngIf="course.description">{{ course.description | slice:0:100 }}{{
+            course.description.length > 100 ? '...' : '' }}</p>
+
+        <div class="summary-section mt-3 mb-3">
+            <button (click)="fetchSummary()" class="btn-summary">
+                <i class="fa" [class.fa-chevron-down]="!showSummary" [class.fa-chevron-up]="showSummary"
+                    *ngIf="!loadingSummary"></i>
+                <i class="fa fa-spinner fa-spin" *ngIf="loadingSummary"></i>
+                {{ showSummary ? 'Hide Summary' : 'Show Summary' }}
+            </button>
+            <div class="summary-content" *ngIf="showSummary">
+                <p>{{ summary }}</p>
+            </div>
+        </div>
+
         <div class="course-two__bottom">
             <div class="course-two__author">
-                <!-- Using cover as placeholder for author if needed, or static author img -->
                 <img src="/frontoffice/eduact-html/assets/images/course/author-1.png" alt="author">
                 <h5 class="course-two__author__name">{{ course.instructor }}</h5>
                 <p class="course-two__author__designation">{{ course.category }}</p>

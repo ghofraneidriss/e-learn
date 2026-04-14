@@ -1,0 +1,92 @@
+<section class="page-header">
+    <div class="page-header__bg" style="background-image: url(/frontoffice/eduact-html/assets/images/backgrounds/page-header-bg-1-1.jpg);"></div>
+    <div class="container">
+        <h2 class="page-header__title">{{ isEditMode ? 'Edit' : 'Add' }} Feedback</h2>
+        <ul class="eduact-breadcrumb list-unstyled">
+            <li><a routerLink="/">Home</a></li>
+            <li><a routerLink="/feedbacks">Feedbacks</a></li>
+            <li><span>{{ isEditMode ? 'Edit' : 'Add' }}</span></li>
+        </ul>
+    </div>
+</section>
+
+<section class="contact-page pd-top-120 pd-bottom-120">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-8 offset-xl-2">
+                <div class="contact-page__form-box">
+                    <div class="section-title text-center">
+                        <h2 class="section-title__title">{{ isEditMode ? 'Modify Your Feedback' : 'Share Your Experience' }}</h2>
+                    </div><!-- /.section-title -->
+
+                    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+                    <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="contact-page__form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="contact-page__input-box">
+                                    <input type="text" placeholder="Your Name" formControlName="userName" [class.is-invalid]="feedbackForm.get('userName')?.invalid && feedbackForm.get('userName')?.touched">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="contact-page__input-box">
+                                    <input type="email" placeholder="Email Address" formControlName="userEmail" [class.is-invalid]="feedbackForm.get('userEmail')?.invalid && feedbackForm.get('userEmail')?.touched">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="batch-input-box mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <input type="text" placeholder="Post Title" formControlName="title" class="form-control" [class.is-invalid]="feedbackForm.get('title')?.invalid && feedbackForm.get('title')?.touched">
+                                        <button type="button" class="btn btn-sm btn-outline-info ml-2" (click)="startSpeechInput('title')" [disabled]="listening">
+                                            <i class="fa fa-microphone"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="contact-page__input-box">
+                                    <input type="url" placeholder="Image URL (optional)" formControlName="imageUrl" [class.is-invalid]="feedbackForm.get('imageUrl')?.invalid && feedbackForm.get('imageUrl')?.touched">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="rating-selection text-center mb-4">
+                                    <p class="mb-2">Your Rating</p>
+                                    <div class="stars">
+                                        <i class="fa fa-star" 
+                                           *ngFor="let star of [1,2,3,4,5]" 
+                                           [class.filled]="star <= feedbackForm.get('rating')?.value"
+                                           (click)="setRating(star)"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="contact-page__input-box">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <textarea placeholder="Write message summary" formControlName="message" [class.is-invalid]="feedbackForm.get('message')?.invalid && feedbackForm.get('message')?.touched"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="contact-page__input-box">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <textarea placeholder="Full Comment" formControlName="comment" [class.is-invalid]="feedbackForm.get('comment')?.invalid && feedbackForm.get('comment')?.touched"></textarea>
+                                        <button type="button" class="btn btn-sm btn-outline-info ml-2 mt-2" (click)="startSpeechInput('comment')" [disabled]="listening">
+                                            <i class="fa fa-microphone"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 text-center mt-3">
+                                <button type="submit" class="eduact-btn eduact-btn-primary" [disabled]="loading">
+                                    <span class="eduact-btn__curve"></span>
+                                    {{ loading ? 'Saving...' : (isEditMode ? 'Update Feedback' : 'Submit Feedback') }}
+                                </button>
+                                <a routerLink="/frontoffice/feedbacks" class="btn btn-link ml-3">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

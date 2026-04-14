@@ -7,7 +7,7 @@ import { Reclamation } from '../models/reclamation.model';
   providedIn: 'root'
 })
 export class ReclamationService {
-  private readonly baseUrl = 'http://localhost:8085/reclamations';
+  private readonly baseUrl = 'http://localhost:8085/api/reclamations';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -15,12 +15,16 @@ export class ReclamationService {
     return this.http.get<Reclamation[]>(this.baseUrl);
   }
 
-  create(payload: Reclamation): Observable<Reclamation> {
-    return this.http.post<Reclamation>(this.baseUrl, payload);
+  getById(id: number): Observable<Reclamation> {
+    return this.http.get<Reclamation>(`${this.baseUrl}/${id}`);
   }
 
-  update(id: number, payload: Reclamation): Observable<Reclamation> {
-    return this.http.put<Reclamation>(`${this.baseUrl}/${id}`, payload);
+  create(data: Reclamation): Observable<Reclamation> {
+    return this.http.post<Reclamation>(this.baseUrl, data);
+  }
+
+  update(id: number, data: Reclamation): Observable<Reclamation> {
+    return this.http.put<Reclamation>(`${this.baseUrl}/${id}`, data);
   }
 
   delete(id: number): Observable<void> {

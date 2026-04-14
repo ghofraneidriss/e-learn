@@ -1,1 +1,54 @@
-/* Styles are now inherited from EDUACT main CSS */
+.top-courses-section {
+    background: #f8fafc;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.section-title__title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f1f5f9;
+    border-top: 5px solid #3b82f6;
+    border-radius: 50%;
+    margin: 0 auto;
+    animation: spin 1s linear infinite;
+}
+
+.empty-box {
+    padding: 60px;
+    color: #94a3b8;
+}
+
+.empty-box h3 {
+    margin-top: 15px;
+    color: #64748b;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.alert-danger {
+    background: #fee2e2;
+    border: 1px solid #fecdd3;
+    color: #991b1b;
+}
+
+.btn-link {
+    color: #2563eb;
+    text-decoration: underline;
+    font-weight: 600;
+}

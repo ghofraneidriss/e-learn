@@ -24,12 +24,12 @@ export class ReclamationManagementComponent implements OnInit {
   readonly statuses: ReclamationStatus[] = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'REJECTED'];
 
   formModel: Reclamation = {
+    subject: '',
+    description: '',
+    status: 'OPEN',
     userName: '',
     userEmail: '',
-    subject: '',
-    imageUrl: '',
-    description: '',
-    status: 'OPEN'
+    imageUrl: ''
   };
 
   constructor(
@@ -63,12 +63,12 @@ export class ReclamationManagementComponent implements OnInit {
     this.successMessage = '';
 
     const payload: Reclamation = {
-      userName: this.formModel.userName.trim(),
-      userEmail: this.formModel.userEmail.trim(),
       subject: this.formModel.subject.trim(),
-      imageUrl: this.formModel.imageUrl?.trim(),
       description: this.formModel.description.trim(),
-      status: this.formModel.status
+      status: this.formModel.status,
+      userName: this.formModel.userName?.trim(),
+      userEmail: this.formModel.userEmail?.trim(),
+      imageUrl: this.formModel.imageUrl?.trim()
     };
 
     if (!payload.userName || !payload.userEmail || !payload.subject || !payload.description) {
@@ -109,10 +109,10 @@ export class ReclamationManagementComponent implements OnInit {
 
     this.editingId = item.id;
     this.formModel = {
-      userName: item.userName,
-      userEmail: item.userEmail,
+      userName: item.userName || '',
+      userEmail: item.userEmail || '',
       subject: item.subject,
-      imageUrl: item.imageUrl,
+      imageUrl: item.imageUrl || '',
       description: item.description,
       status: item.status
     };
@@ -157,7 +157,7 @@ export class ReclamationManagementComponent implements OnInit {
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(
-      `Reclamation de ${item.userName}. Sujet: ${item.subject}. Description: ${item.description}. Statut: ${item.status}.`
+      `Reclamation de ${item.userName || 'Utilisateur'}. Sujet: ${item.subject}. Description: ${item.description}. Statut: ${item.status}.`
     );
     utterance.lang = 'fr-FR';
     utterance.onstart = () => {
@@ -203,8 +203,8 @@ export class ReclamationManagementComponent implements OnInit {
     exporter.setFontSize(12);
     const lines = [
       `ID: ${item.id ?? '-'}`,
-      `Nom: ${item.userName}`,
-      `Email: ${item.userEmail}`,
+      `Nom: ${item.userName || '-'}`,
+      `Email: ${item.userEmail || '-'}`,
       `Sujet: ${item.subject}`,
       `Statut: ${item.status}`,
       `Image URL: ${item.imageUrl ?? '-'}`,
@@ -222,6 +222,6 @@ export class ReclamationManagementComponent implements OnInit {
   }
 
   private buildShareText(item: Reclamation): string {
-    return `Reclamation: ${item.subject}\nAuteur: ${item.userName}\nStatut: ${item.status}\nDescription: ${item.description}`;
+    return `Reclamation: ${item.subject}\nAuteur: ${item.userName || 'Inconnu'}\nStatut: ${item.status}\nDescription: ${item.description}`;
   }
 }

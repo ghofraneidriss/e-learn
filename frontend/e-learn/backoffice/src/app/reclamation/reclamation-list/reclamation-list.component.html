@@ -1,0 +1,72 @@
+<section class="page-header">
+    <div class="page-header__bg" style="background-image: url(/frontoffice/eduact-html/assets/images/backgrounds/page-header-bg-1-1.jpg);"></div>
+    <div class="container">
+        <h2 class="page-header__title">Reclamations</h2>
+        <ul class="eduact-breadcrumb list-unstyled">
+            <li><a routerLink="/">Home</a></li>
+            <li><span>Reclamations</span></li>
+        </ul>
+    </div>
+</section>
+
+<section class="reclamation-page pd-top-120 pd-bottom-120">
+    <div class="container">
+        <div class="section-title text-center">
+            <h2 class="section-title__title">Your Requests & Inquiries</h2>
+            <div class="mt-4">
+                <a routerLink="new" class="eduact-btn eduact-btn-primary">
+                    <span class="eduact-btn__curve"></span>
+                    Submit New Reclamation
+                </a>
+            </div>
+        </div>
+
+        <div *ngIf="loading" class="text-center mt-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-4">{{ errorMessage }}</div>
+        <div *ngIf="successMessage" class="alert alert-success mt-4">{{ successMessage }}</div>
+
+        <div class="row mt-5" *ngIf="!loading">
+            <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let rec of reclamations">
+                <div class="reclamation-card">
+                    <div class="reclamation-card__header">
+                        <span class="reclamation-id">#{{ rec.id }}</span>
+                        <span class="badge" [ngClass]="getStatusBadgeClass(rec.status)">{{ rec.status }}</span>
+                    </div>
+                    <div class="reclamation-card__content">
+                        <h3 class="reclamation-card__subject">{{ rec.subject }}</h3>
+                        <p class="reclamation-card__desc">{{ rec.description | slice:0:100 }}{{ rec.description.length > 100 ? '...' : '' }}</p>
+                    </div>
+                    <div class="reclamation-card__footer p-3 border-top mt-auto d-flex justify-content-between align-items-center">
+                        <div class="share-btns">
+                            <button (click)="shareOnWhatsapp(rec)" class="btn btn-link text-success p-0 mr-2" title="Share on WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                            <button (click)="shareOnTelegram(rec)" class="btn btn-link text-info p-0 mr-2" title="Share on Telegram">
+                                <i class="fab fa-telegram"></i>
+                            </button>
+                            <button (click)="speakReclamation(rec)" class="btn btn-link text-secondary p-0 mr-2" [disabled]="speaking" title="Listen to Reclamation">
+                                <i class="fa" [class.fa-volume-up]="!speaking" [class.fa-spinner]="speaking"></i>
+                            </button>
+                            <button (click)="exportPdf(rec)" class="btn btn-link text-danger p-0" title="Export PDF">
+                                <i class="fa fa-file-pdf"></i>
+                            </button>
+                        </div>
+                        <div class="crud-btns">
+                            <a [routerLink]="['/frontoffice/reclamations/edit', rec.id]" class="btn btn-sm btn-outline-primary mr-1">Edit</a>
+                            <button (click)="deleteReclamation(rec.id)" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!loading && reclamations.length === 0" class="text-center mt-5">
+            <p>You haven't submitted any reclamations yet.</p>
+        </div>
+    </div>
+</section>

@@ -7,7 +7,7 @@ import { Feedback } from '../models/feedback.model';
   providedIn: 'root'
 })
 export class FeedbackService {
-  private readonly baseUrl = 'http://localhost:8085/feedbacks';
+  private readonly baseUrl = 'http://localhost:8085/api/feedbacks';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -15,12 +15,16 @@ export class FeedbackService {
     return this.http.get<Feedback[]>(this.baseUrl);
   }
 
-  create(payload: Feedback): Observable<Feedback> {
-    return this.http.post<Feedback>(this.baseUrl, payload);
+  getById(id: number): Observable<Feedback> {
+    return this.http.get<Feedback>(`${this.baseUrl}/${id}`);
   }
 
-  update(id: number, payload: Feedback): Observable<Feedback> {
-    return this.http.put<Feedback>(`${this.baseUrl}/${id}`, payload);
+  create(data: Feedback): Observable<Feedback> {
+    return this.http.post<Feedback>(this.baseUrl, data);
+  }
+
+  update(id: number, data: Feedback): Observable<Feedback> {
+    return this.http.put<Feedback>(`${this.baseUrl}/${id}`, data);
   }
 
   delete(id: number): Observable<void> {

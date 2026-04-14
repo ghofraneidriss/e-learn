@@ -1,0 +1,73 @@
+<section class="page-header">
+    <div class="page-header__bg" style="background-image: url(/frontoffice/eduact-html/assets/images/backgrounds/page-header-bg-1-1.jpg);"></div>
+    <div class="container">
+        <h2 class="page-header__title">Feedbacks</h2>
+        <ul class="eduact-breadcrumb list-unstyled">
+            <li><a routerLink="/">Home</a></li>
+            <li><span>Feedbacks</span></li>
+        </ul>
+    </div>
+</section>
+
+<section class="feedback-page pd-top-120 pd-bottom-120">
+    <div class="container">
+        <div class="section-title text-center">
+            <h2 class="section-title__title">Student Feedbacks</h2>
+            <div class="mt-4">
+                <a routerLink="new" class="eduact-btn eduact-btn-primary">
+                    <span class="eduact-btn__curve"></span>
+                    Add Feedback
+                </a>
+            </div>
+        </div>
+
+        <div *ngIf="loading" class="text-center mt-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-4">{{ errorMessage }}</div>
+        <div *ngIf="successMessage" class="alert alert-success mt-4">{{ successMessage }}</div>
+
+        <div class="row mt-5" *ngIf="!loading">
+            <div class="col-xl-4 col-lg-6 col-md-6 mb-4" *ngFor="let feedback of feedbacks">
+                <div class="feedback-card h-100">
+                    <div class="feedback-card__image" *ngIf="feedback.imageUrl">
+                        <img [src]="feedback.imageUrl" alt="Feedback image" class="img-fluid rounded-top">
+                    </div>
+                    <div class="feedback-card__content p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h4 class="feedback-card__title mb-0">{{ feedback.title }}</h4>
+                            <div class="feedback-card__rating">
+                                <i class="fa fa-star" *ngFor="let i of [1,2,3,4,5]" [class.filled]="i <= feedback.rating"></i>
+                            </div>
+                        </div>
+                        <p class="feedback-card__text">{{ feedback.comment | slice:0:150 }}{{ feedback.comment && feedback.comment.length > 150 ? '...' : '' }}</p>
+                        <div class="feedback-card__user mt-3">
+                            <span class="text-muted small">By {{ feedback.userName }}</span>
+                        </div>
+                    </div>
+                    <div class="feedback-card__footer p-3 border-top d-flex justify-content-between align-items-center">
+                        <div class="share-btns">
+                            <button (click)="shareOnWhatsapp(feedback)" class="btn btn-sm btn-link text-success mr-2" title="Share on WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                            <button (click)="shareOnTelegram(feedback)" class="btn btn-sm btn-link text-info" title="Share on Telegram">
+                                <i class="fab fa-telegram"></i>
+                            </button>
+                        </div>
+                        <div class="crud-btns">
+                            <a [routerLink]="['edit', feedback.id]" class="btn btn-sm btn-outline-primary mr-2">Edit</a>
+                            <button (click)="deleteFeedback(feedback.id)" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!loading && feedbacks.length === 0" class="text-center mt-5">
+            <p>No feedbacks found. Be the first to share your thoughts!</p>
+        </div>
+    </div>
+</section>

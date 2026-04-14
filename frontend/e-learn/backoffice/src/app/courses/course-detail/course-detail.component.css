@@ -1,8 +1,46 @@
-/* Styles are now inherited from EDUACT main CSS */
-.italic {
-    font-style: italic;
+.course-details__sidebar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
 }
-.ai-summary-box {
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+
+.course-details__sidebar__title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #3b82f6;
+}
+
+.course-details__sidebar__list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 15px;
+    color: #475569;
+}
+
+.course-details__sidebar__list li i {
+    color: #3b82f6;
+    margin-right: 10px;
+}
+
+.course-details__sidebar__list li span {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.course-details__meta {
+    display: flex;
+    gap: 30px;
+    color: #64748b;
+}
+
+.course-details__meta__item i {
+    color: #3b82f6;
+    margin-right: 8px;
+}
+
+.course-video-preview h4 {
+    font-weight: 800;
+    color: #1e293b;
 }

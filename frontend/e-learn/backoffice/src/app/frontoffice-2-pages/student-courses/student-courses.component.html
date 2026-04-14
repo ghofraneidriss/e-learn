@@ -1,0 +1,145 @@
+<div class="custom-cursor__cursor"></div>
+<div class="custom-cursor__cursor-two"></div>
+
+<div class="preloader" *ngIf="loading">
+    <div class="preloader__image" style="background-image: url(/frontoffice/eduact-html/assets/images/loader.png);">
+    </div>
+</div>
+
+<section class="page-header page-header--bg-two" data-jarallax="" data-speed="0.3" data-imgposition="50% -100%">
+    <div class="page-header__bg jarallax-img"></div><!-- /.page-header-bg -->
+    <div class="page-header__overlay"></div><!-- /.page-header-overlay -->
+    <div class="container text-center">
+        <h2 class="page-header__title">Course</h2><!-- /.page-title -->
+        <ul class="page-header__breadcrumb list-unstyled">
+            <li><a routerLink="/frontoffice/index">Home</a></li>
+            <li><span>Course</span></li>
+        </ul><!-- /.page-breadcrumb list-unstyled -->
+    </div><!-- /.container -->
+</section><!-- /.page-header -->
+
+<!-- Course Start -->
+<section class="course-two course-two--page">
+    <div class="course-two__shape-top wow fadeInRight" data-wow-delay="300ms"><img
+            src="/frontoffice/eduact-html/assets/images/shapes/course-shape-1.png" alt="eduact"></div>
+    <div class="container">
+
+        <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+        <div *ngIf="!loading && allCourses.length === 0" class="text-center w-100 py-5">
+            <p>Aucun cours disponible.</p>
+        </div>
+
+        <div class="row">
+            <!-- COURSE CARD -->
+            <div class="col-xl-4 col-md-6 wow fadeInUp" data-wow-delay="100ms" *ngFor="let course of allCourses">
+                <div class="course-two__item">
+                    <div class="course-two__thumb">
+                        <img [src]="getCoverUrl(course)" alt="eduact"
+                            (error)="$any($event.target).src='/frontoffice/eduact-html/assets/images/course/course-2-1.png'">
+                        <a class="course-two__like" href="javascript:void(0);" (click)="shareWhatsApp(course)"
+                            title="Share WhatsApp"><span class="fab fa-whatsapp"></span></a>
+                        <a class="course-two__like" href="javascript:void(0);" (click)="shareTelegram(course)"
+                            style="right: 70px" title="Share Telegram"><span class="fab fa-telegram"></span></a>
+                        <a class="course-two__like" href="javascript:void(0);" (click)="speakCourse(course)"
+                            style="right: 120px" title="Read Aloud" [class.text-danger]="speaking"><span
+                                class="fas fa-volume-up"></span></a>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 353 177">
+                            <path
+                                d="M37 0C16.5655 0 0 16.5655 0 37V93.4816C0 103.547 4.00259 113.295 11.7361 119.737C54.2735 155.171 112.403 177 176.496 177C240.589 177 298.718 155.171 341.261 119.737C348.996 113.295 353 103.546 353 93.4795V37C353 16.5655 336.435 0 316 0H37Z">
+                            </path>
+                        </svg>
+                    </div><!-- /.course-thumb -->
+                    <div class="course-two__content">
+                        <div class="course-two__time">{{ course.duration || '20 Hours' }}</div>
+                        <div class="course-two__ratings">
+                            <span class="icon-star"></span><span class="icon-star"></span><span
+                                class="icon-star"></span><span class="icon-star"></span><span class="icon-star"></span>
+                            <div class="course-two__ratings__reviews">(25 Reviews)</div>
+                        </div>
+                        <h3 class="course-two__title">
+                            <a href="javascript:void(0);" (click)="openDetail(course)">{{ course.title }}</a>
+                        </h3>
+                        <div class="course-two__bottom">
+                            <div class="course-two__author">
+                                <img src="/frontoffice/eduact-html/assets/images/course/author-1.png" alt="eduact">
+                                <h5 class="course-two__author__name">{{ course.instructor || 'Guy Hawkins' }}</h5>
+                                <p class="course-two__author__designation" style="font-size: 12px; margin-top:2px;">
+                                    {{ course.category || 'Tutor' }}</p>
+                            </div>
+                            <div class="course-two__meta">
+                                <h4 class="course-two__meta__price">${{ course.price }}</h4>
+                                <p class="course-two__meta__class">{{ course.level }}</p>
+                            </div>
+                        </div>
+                    </div><!-- /.course-content -->
+                </div><!-- /.course-card-two -->
+            </div>
+        </div>
+    </div>
+    <div class="course-two__shape-bottom wow fadeInLeft" data-wow-delay="400ms"><img
+            src="/frontoffice/eduact-html/assets/images/shapes/course-shape-2.png" alt="eduact"></div>
+</section>
+<!-- Course End -->
+
+<!-- DETAIL MODAL -->
+<div class="modal custom-modal" tabindex="-1" [class.d-block]="showModal" [class.show]="showModal"
+    style="background-color: rgba(0,0,0,0.5)">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" *ngIf="selectedCourse">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ selectedCourse.title }}</h5>
+                <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <img [src]="getCoverUrl(selectedCourse)" class="img-fluid rounded mb-3"
+                            (error)="$any($event.target).src='/frontoffice/eduact-html/assets/images/course/course-2-1.png'">
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Price: <span class="badge bg-primary rounded-pill">${{ selectedCourse.price }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Level: <span>{{ selectedCourse.level }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Category: <span>{{ selectedCourse.category }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Duration: <span>{{ selectedCourse.duration }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Language: <span>{{ selectedCourse.language }}</span>
+                            </li>
+                        </ul>
+                        <button class="eduact-btn w-100" (click)="exportDetails(selectedCourse)">
+                            <span class="eduact-btn__curve"></span>Export Details
+                        </button>
+                    </div>
+                    <div class="col-md-7">
+                        <h6>Description</h6>
+                        <p>{{ selectedCourse.description }}</p>
+
+                        <hr>
+                        <h6>🤖 AI Summary</h6>
+                        <button class="btn btn-sm btn-outline-primary mb-2" (click)="loadSummary()"
+                            [disabled]="loadingSummary">
+                            {{ loadingSummary ? 'Generating...' : 'Generate AI Summary' }}
+                        </button>
+                        <div class="p-3 bg-light rounded" *ngIf="summary">
+                            <p class="mb-0" style="font-size: 14px;">{{ summary }}</p>
+                        </div>
+
+                        <div class="mt-4" *ngIf="selectedCourse.video">
+                            <h6>Preview Video</h6>
+                            <video controls style="width:100%; border-radius: 8px;">
+                                <source [src]="selectedCourse.video" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

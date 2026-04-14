@@ -1,0 +1,36 @@
+.rating-selection {
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+.stars {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.stars i {
+    font-size: 30px;
+    color: #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.stars i:hover {
+    transform: scale(1.2);
+}
+
+.stars i.filled {
+    color: #ffb100;
+}
+
+.invalid-feedback {
+    display: block;
+    margin-top: 5px;
+}
+
+.contact-page__input-box input.is-invalid,
+.contact-page__input-box textarea.is-invalid {
+    border-color: #ff4d4d;
+}

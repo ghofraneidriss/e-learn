@@ -1,0 +1,44 @@
+<section class="page-header">
+    <div class="page-header__bg" style="background-image: url(/frontoffice/eduact-html/assets/images/backgrounds/page-header-bg.jpg);"></div>
+    <div class="container">
+        <h2 class="page-header__title">Feedback Details</h2>
+        <ul class="eduact-breadcrumb list-unstyled">
+            <li><a routerLink="/">Home</a></li>
+            <li><a routerLink="/feedbacks">Feedbacks</a></li>
+            <li><span>Details</span></li>
+        </ul>
+    </div>
+</section>
+
+<section class="feedback-details pd-top-120 pd-bottom-120">
+    <div class="container">
+        <div *ngIf="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+        <div class="row" *ngIf="feedback">
+            <div class="col-md-10 offset-md-1">
+                <div class="feedback-card detail-card">
+                    <div class="feedback-card__content">
+                        <div class="feedback-card__rating">
+                            <i class="fa fa-star" *ngFor="let i of [1,2,3,4,5]" [class.filled]="i <= feedback.rating"></i>
+                        </div>
+                        <h3 class="mt-3 mb-4">Feedback from {{ feedback.user }}</h3>
+                        <p class="feedback-card__text" style="font-size: 20px;">"{{ feedback.message }}"</p>
+                        <div class="mt-5">
+                            <a routerLink="/feedbacks" class="eduact-btn eduact-btn-primary">
+                                <span class="eduact-btn__curve"></span>
+                                Back to List
+                            </a>
+                            <a [routerLink]="['/feedbacks/edit', feedback.id]" class="btn btn-outline-primary ml-3">Edit this feedback</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

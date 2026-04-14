@@ -27,11 +27,13 @@ export class FeedbackManagementComponent implements OnInit {
   private speechRecognition: any = null;
 
   formModel: Feedback = {
+    user: '',
+    message: '',
+    rating: 5,
     userName: '',
     userEmail: '',
     title: '',
     imageUrl: '',
-    rating: 5,
     comment: ''
   };
 
@@ -67,12 +69,14 @@ export class FeedbackManagementComponent implements OnInit {
     this.successMessage = '';
 
     const payload: Feedback = {
-      userName: this.formModel.userName.trim(),
-      userEmail: this.formModel.userEmail.trim(),
-      title: this.formModel.title.trim(),
-      imageUrl: this.formModel.imageUrl?.trim(),
+      user: this.formModel.userName?.trim() || '',
+      message: this.formModel.comment?.trim() || '',
       rating: this.formModel.rating,
-      comment: this.formModel.comment.trim()
+      userName: this.formModel.userName?.trim(),
+      userEmail: this.formModel.userEmail?.trim(),
+      title: this.formModel.title?.trim(),
+      imageUrl: this.formModel.imageUrl?.trim(),
+      comment: this.formModel.comment?.trim()
     };
 
     if (!payload.userName || !payload.userEmail || !payload.title || !payload.comment) {
@@ -118,12 +122,14 @@ export class FeedbackManagementComponent implements OnInit {
 
     this.editingId = item.id;
     this.formModel = {
-      userName: item.userName,
-      userEmail: item.userEmail,
-      title: item.title,
-      imageUrl: item.imageUrl,
+      user: item.user || '',
+      message: item.message || '',
       rating: item.rating,
-      comment: item.comment
+      userName: item.userName || '',
+      userEmail: item.userEmail || '',
+      title: item.title || '',
+      imageUrl: item.imageUrl || '',
+      comment: item.comment || ''
     };
   }
 
@@ -149,11 +155,13 @@ export class FeedbackManagementComponent implements OnInit {
   resetForm(): void {
     this.editingId = null;
     this.formModel = {
+      user: '',
+      message: '',
+      rating: 5,
       userName: '',
       userEmail: '',
       title: '',
       imageUrl: '',
-      rating: 5,
       comment: ''
     };
   }
@@ -215,7 +223,7 @@ export class FeedbackManagementComponent implements OnInit {
   }
 
   buildShareText(item: Feedback): string {
-    return `Forum Post: ${item.title}\nAuteur: ${item.userName}\nCommentaire: ${item.comment}\nNote: ${item.rating}/5`;
+    return `Forum Post: ${item.title || 'Sans titre'}\nAuteur: ${item.userName || 'Anonyme'}\nCommentaire: ${item.comment || 'Sans commentaire'}\nNote: ${item.rating}/5`;
   }
 
   shareOnWhatsapp(item: Feedback): void {
@@ -237,11 +245,11 @@ export class FeedbackManagementComponent implements OnInit {
     const latest = this.feedbacks[0];
     this.qrPayload = JSON.stringify({
       id: latest.id,
-      title: latest.title,
-      author: latest.userName,
-      comment: latest.comment,
+      title: latest.title || 'Post',
+      author: latest.userName || 'Auteur',
+      comment: latest.comment || '...',
       rating: latest.rating,
-      createdAt: latest.createdAt
+      createdAt: latest.createdAt || ''
     });
   }
 }

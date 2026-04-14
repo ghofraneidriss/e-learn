@@ -1,0 +1,94 @@
+<div class="course-form-card">
+    <div class="card-header">
+        <h3>🚀 Add New Course</h3>
+        <p>Share your knowledge with the community</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #courseForm="ngForm" class="form-content">
+        <div class="form-group">
+            <label for="title">Course Title</label>
+            <input type="text" id="title" name="title" [(ngModel)]="course.title" required
+                placeholder="e.g. Mastering Angular">
+        </div>
+
+        <div class="form-group full-width">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <label for="description">Description</label>
+                <button type="button" class="btn-ai" (click)="generateDescription()"
+                    [disabled]="generatingDescription || !course.title">
+                    <i class="fa" [class.fa-magic]="!generatingDescription" [class.fa-spinner]="generatingDescription"
+                        [class.fa-spin]="generatingDescription"></i>
+                    AI Generate
+                </button>
+            </div>
+            <textarea id="description" name="description" [(ngModel)]="course.description" rows="4"
+                placeholder="Briefly describe what students will learn..."></textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" id="category" name="category" [(ngModel)]="course.category"
+                    placeholder="Web Dev, Business...">
+            </div>
+            <div class="form-group">
+                <label for="level">Level</label>
+                <select id="level" name="level" [(ngModel)]="course.level">
+                    <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="language">Language</label>
+                <input type="text" id="language" name="language" [(ngModel)]="course.language"
+                    placeholder="English, French...">
+            </div>
+            <div class="form-group">
+                <label for="price">Price ($)</label>
+                <input type="number" id="price" name="price" [(ngModel)]="course.price">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="duration">Duration</label>
+                <input type="text" id="duration" name="duration" [(ngModel)]="course.duration"
+                    placeholder="e.g. 10 hours">
+            </div>
+            <div class="form-group">
+                <label for="instructor">Instructor</label>
+                <input type="text" id="instructor" name="instructor" [(ngModel)]="course.instructor"
+                    placeholder="Your Name">
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <div class="upload-box">
+                <label for="cover">Cover Image</label>
+                <input type="file" id="cover" (change)="onFileSelected($event, 'cover')" accept="image/*">
+                <div class="file-preview" *ngIf="coverFile">Selected: {{ coverFile.name }}</div>
+            </div>
+            <div class="upload-box">
+                <label for="video">Video Preview</label>
+                <input type="file" id="video" (change)="onFileSelected($event, 'video')" accept="video/*">
+                <div class="file-preview" *ngIf="videoFile">Selected: {{ videoFile.name }}</div>
+            </div>
+        </div>
+
+        <div class="feedback-messages">
+            <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+            <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="!courseForm.form.valid || loading">
+                <i class="fa fa-plus-circle" *ngIf="!loading"></i>
+                <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+                {{ loading ? 'Creating...' : 'Create Course' }}
+            </button>
+            <button type="button" class="btn-secondary" (click)="resetForm()">Reset</button>
+        </div>
+    </form>
+</div>

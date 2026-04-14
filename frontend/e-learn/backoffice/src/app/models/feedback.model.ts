@@ -1,10 +1,12 @@
 export interface Feedback {
   id?: number;
-  userName: string;
-  userEmail: string;
-  title: string;
-  imageUrl?: string;
+  user: string;
+  message: string;
   rating: number;
-  comment: string;
+  userName?: string;
+  userEmail?: string;
+  title?: string;
+  comment?: string;
+  imageUrl?: string;
   createdAt?: string;
 }

@@ -1,43 +1,60 @@
-<section class="page-header page-header--bg-two" data-jarallax="" data-speed="0.3" data-imgposition="50% -100%" *ngIf="!loading && !errorMsg">
-    <div class="page-header__bg jarallax-img"></div>
-    <div class="page-header__overlay"></div>
-    <div class="container text-center">
-        <h2 class="page-header__title">Courses</h2>
-        <ul class="page-header__breadcrumb list-unstyled">
+<section class="page-header">
+    <div class="page-header__bg"
+        style="background-image: url(/frontoffice/eduact-html/assets/images/backgrounds/page-header-bg-1-1.jpg);"></div>
+    <div class="container">
+        <h2 class="page-header__title">Explore Courses</h2>
+        <ul class="eduact-breadcrumb list-unstyled">
             <li><a routerLink="/">Home</a></li>
             <li><span>Courses</span></li>
         </ul>
     </div>
 </section>
 
-<section class="course-two course-two--page" *ngIf="!loading && !errorMsg">
-    <div class="course-two__shape-top wow fadeInRight" data-wow-delay="300ms">
-        <img src="/frontoffice/eduact-html/assets/images/shapes/course-shape-1.png" alt="shape">
-    </div>
+<section class="courses-page pd-top-80 pd-bottom-120">
     <div class="container">
-        <div class="row">
-            <div class="col-xl-4 col-md-6 wow fadeInUp" *ngFor="let course of courses; let i = index" [attr.data-wow-delay]="(i * 100) + 'ms'">
+        <!-- New Course Form Section -->
+        <app-course-form-card (courseCreated)="onCourseCreated()"></app-course-form-card>
+
+        <!-- Top Courses Section -->
+        <div class="top-courses-section mb-5" *ngIf="topCourses.length > 0">
+            <div class="section-title text-left">
+                <h2 class="section-title__title">⭐ Top Rated Courses</h2>
+                <p>Most popular picks by our community this week</p>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let course of topCourses">
+                    <app-course-card [course]="course"></app-course-card>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title text-center mt-5">
+            <h2 class="section-title__title">All Available Courses</h2>
+            <p>Master new skills with our professional certification programs</p>
+        </div>
+
+        <div *ngIf="loading" class="text-center mt-5">
+            <div class="loading-spinner"></div>
+            <p class="mt-3">Loading courses...</p>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger text-center mt-4">
+            <i class="fa fa-exclamation-triangle mr-2"></i> {{ errorMessage }}
+            <button class="btn btn-link" (click)="refreshData()">Try Again</button>
+        </div>
+
+        <div class="row mt-5" *ngIf="!loading && courses.length > 0">
+            <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let course of courses">
                 <app-course-card [course]="course"></app-course-card>
             </div>
         </div>
 
-        <div *ngIf="courses.length === 0" class="no-courses text-center mt-5">
-            <h3>No courses available at the moment.</h3>
+        <div *ngIf="!loading && courses.length === 0 && !errorMessage" class="text-center mt-5">
+            <div class="empty-box">
+                <i class="fa fa-search fa-3x"></i>
+                <h3>No courses found</h3>
+                <p>Be the first to create an amazing course!</p>
+            </div>
         </div>
     </div>
-    <div class="course-two__shape-bottom wow fadeInLeft" data-wow-delay="400ms">
-        <img src="/frontoffice/eduact-html/assets/images/shapes/course-shape-2.png" alt="shape">
-    </div>
 </section>
-
-<!-- Loading State -->
-<div class="preloader" *ngIf="loading">
-    <div class="preloader__image" style="background-image: url(/frontoffice/eduact-html/assets/images/loader.png);"></div>
-</div>
-
-<!-- Error State -->
-<div class="container mt-5 pt-5" *ngIf="errorMsg">
-    <div class="alert alert-danger text-center">
-        {{ errorMsg }}
-    </div>
-</div>
