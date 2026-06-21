@@ -1,0 +1,19 @@
+{
+  "name": "cours-service",
+  "version": "1.0.0",
+  "description": "Course microservice for the e-learn project",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.8",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "eureka-js-client": "^4.5.0",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  }
+}

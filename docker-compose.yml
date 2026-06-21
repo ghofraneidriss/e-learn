@@ -1,0 +1,118 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: elearn-postgres
+    environment:
+      POSTGRES_DB: coursdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: elearn-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  keycloak:
+    image: keycloak/keycloak:22.0.1
+    container_name: elearn-keycloak
+    command: start-dev --http-port 8080 --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: elearn-eureka
+    environment:
+      SERVER_PORT: 8761
+    ports:
+      - "8761:8761"
+
+  config-server:
+    build:
+      context: ./config-server
+    container_name: elearn-config
+    environment:
+      SERVER_PORT: 8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    ports:
+      - "8888:8888"
+    depends_on:
+      - eureka-server
+
+  cours:
+    build:
+      context: ./cours
+    container_name: elearn-cours
+    restart: on-failure
+    environment:
+      PORT: 8080
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/coursdb
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      EUREKA_HOST: eureka-server
+      EUREKA_PORT: 8761
+      SERVICE_HOST: cours
+      SERVICE_NAME: COURS
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - rabbitmq
+      - eureka-server
+
+  evaluation:
+    build:
+      context: ./evaluation
+    container_name: elearn-evaluation
+    environment:
+      SERVER_PORT: 8082
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - rabbitmq
+      - eureka-server
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: elearn-gateway
+    environment:
+      SERVER_PORT: 9000
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://host.docker.internal:8081/realms/elearn-realm/protocol/openid-connect/certs
+    ports:
+      - "9000:9000"
+    depends_on:
+      - keycloak
+      - eureka-server
+
+  frontend:
+    build:
+      context: ./frontend/e-learn
+    container_name: elearn-frontend
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api-gateway
+
+volumes:
+  postgres_data:

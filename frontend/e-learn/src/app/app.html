@@ -1,1 +1,250 @@
+<main class="page-shell">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">E-Learn</p>
+      <h1>Gerez des cours, des quiz et les acces securises dans une seule application.</h1>
+      <p class="hero-text">
+        E-Learn permet de consulter des cours, creer des quiz, assigner un quiz a un cours et
+        proteger les actions par Keycloak. Par exemple, un enseignant peut ajouter un cours de
+        Java Spring, publier un quiz sur Eureka, puis l'affecter au bon module.
+      </p>
+    </div>
+    <div class="hero-meta">
+      <span class="pill">Gateway : <strong>9000</strong></span>
+      <span class="pill">Evaluation : <strong>8082</strong></span>
+      <span class="pill">Cours : <strong>8080</strong></span>
+      <span class="pill">Keycloak : <strong>8081</strong></span>
+    </div>
+  </section>
 
+  <section class="grid grid-auth">
+    <article class="card auth-card">
+      <div class="card-header">
+        <h2>Connexion</h2>
+        <div class="quick-login">
+          <button type="button" class="ghost" (click)="loginAs('student')">Student</button>
+          <button type="button" class="ghost" (click)="loginAs('teacher')">Teacher</button>
+          <button type="button" class="ghost" (click)="loginAs('admin')">Admin</button>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Username
+          <input [(ngModel)]="loginForm.username" type="text" placeholder="testuser" />
+        </label>
+        <label>
+          Password
+          <input [(ngModel)]="loginForm.password" type="password" placeholder="password" />
+        </label>
+        <label>
+          Client
+          <input [(ngModel)]="loginForm.clientId" type="text" placeholder="elearn-client" />
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" (click)="login()">Login Keycloak</button>
+        <button type="button" class="secondary" (click)="logout()" [disabled]="!token">Logout</button>
+        <button type="button" class="secondary" (click)="refreshData()" [disabled]="!token">Refresh</button>
+      </div>
+
+      <div class="session-box" *ngIf="session; else noSession">
+        <p><strong>User:</strong> {{ session.username }}</p>
+        <p><strong>Roles:</strong> {{ session.roles.join(', ') || 'None' }}</p>
+        <p><strong>Token:</strong> {{ tokenPreview }}</p>
+      </div>
+      <ng-template #noSession>
+        <div class="session-box muted">No active Keycloak session yet.</div>
+      </ng-template>
+
+      <p class="feedback success" *ngIf="message">{{ message }}</p>
+      <p class="feedback error" *ngIf="error">{{ error }}</p>
+    </article>
+
+    <article class="card">
+      <div class="card-header">
+        <h2>Course creation</h2>
+        <span class="badge" [class.locked]="!canWrite">
+          Write access required
+        </span>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Title
+          <input [(ngModel)]="courseForm.title" type="text" />
+        </label>
+        <label>
+          Duration
+          <input [(ngModel)]="courseForm.duration" type="number" />
+        </label>
+        <label>
+          Level
+          <input [(ngModel)]="courseForm.level" type="text" />
+        </label>
+        <label>
+          Teacher
+          <input [(ngModel)]="courseForm.teacherName" type="text" />
+        </label>
+        <label class="span-2">
+          Description
+          <textarea [(ngModel)]="courseForm.description" rows="3"></textarea>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" (click)="createCourse()" [disabled]="!token || loading || !canWrite">
+          Create course
+        </button>
+      </div>
+    </article>
+  </section>
+
+  <section class="grid grid-main">
+    <article class="card">
+      <div class="card-header">
+        <h2>Quiz creation</h2>
+        <span class="badge" [class.locked]="!canWrite">
+          RabbitMQ on create
+        </span>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Title
+          <input [(ngModel)]="quizForm.title" type="text" />
+        </label>
+        <label class="span-2">
+          Description
+          <textarea [(ngModel)]="quizForm.description" rows="3"></textarea>
+        </label>
+        <label class="span-2">
+          Questions
+          <textarea
+            [(ngModel)]="quizForm.questionsText"
+            rows="5"
+            placeholder="One question per line"
+          ></textarea>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" (click)="createQuiz()" [disabled]="!token || loading || !canWrite">
+          Create quiz
+        </button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-header">
+        <h2>Assign quiz to course</h2>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Quiz id
+          <input [(ngModel)]="assignForm.quizId" type="number" />
+        </label>
+        <label>
+          Course id
+          <input [(ngModel)]="assignForm.courseId" type="number" />
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" (click)="assignQuiz()" [disabled]="!token || loading || !canWrite">
+          Assign
+        </button>
+      </div>
+    </article>
+  </section>
+
+  <section class="grid grid-lists">
+    <article class="card list-card">
+      <div class="card-header">
+        <h2>Courses</h2>
+        <button type="button" class="ghost" (click)="loadCourses()" [disabled]="!token">Reload</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Level</th>
+              <th>Duration</th>
+              <th>Teacher</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let course of courses">
+              <td>{{ course.id }}</td>
+              <td>{{ course.title }}</td>
+              <td>{{ course.level || '-' }}</td>
+              <td>{{ course.duration || '-' }}</td>
+              <td>{{ course.teacherName || '-' }}</td>
+            </tr>
+            <tr *ngIf="!courses.length">
+              <td colspan="5" class="empty">No courses loaded yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="card list-card">
+      <div class="card-header">
+        <h2>Quizzes</h2>
+        <button type="button" class="ghost" (click)="loadQuizzes()" [disabled]="!token">Reload</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Course</th>
+              <th>Questions</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let quiz of quizzes">
+              <td>{{ quiz.id }}</td>
+              <td>{{ quiz.title }}</td>
+              <td>{{ quiz.courseId || '-' }}</td>
+              <td>{{ quiz.questions.length || 0 }}</td>
+              <td>
+                <button type="button" class="danger" (click)="deleteQuiz(quiz.id)" [disabled]="!token || !canWrite">
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="!quizzes.length">
+              <td colspan="5" class="empty">No quizzes loaded yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</main>
+
+<div class="popup-backdrop" *ngIf="popup.visible" (click)="closePopup()">
+  <div class="popup-card" [ngClass]="popup.kind" (click)="$event.stopPropagation()">
+    <div class="popup-header">
+      <div>
+        <p class="popup-eyebrow">{{ popup.kind | uppercase }}</p>
+        <h3>{{ popup.title }}</h3>
+      </div>
+      <button type="button" class="popup-close" (click)="closePopup()">×</button>
+    </div>
+    <p class="popup-message">{{ popup.message }}</p>
+    <div class="popup-actions">
+      <button type="button" class="primary" (click)="closePopup()">OK</button>
+    </div>
+  </div>
+</div>

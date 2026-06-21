@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: api-gateway
+  config:
+    import: optional:configserver:http://localhost:8888
   cloud:
     gateway:
       discovery:
@@ -11,18 +13,31 @@ spring:
           enabled: true
       routes:
         - id: cours-service
-          uri: lb://Cours
+          uri: lb://COURS
           predicates:
             - Path=/cours/**
         - id: evaluation-service
-          uri: lb://evaluation
+          uri: lb://EVALUATION
           predicates:
             - Path=/quizzes/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - http://localhost:4200
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - '*'
+            allowCredentials: true
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8081/realms/elearn-realm
           jwk-set-uri: http://localhost:8081/realms/elearn-realm/protocol/openid-connect/certs
 
 eureka:
