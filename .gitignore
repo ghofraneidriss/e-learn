@@ -1,0 +1,11 @@
+# Build outputs
+**/target/
+**/node_modules/
+.m2repo/
+
+# IDE files
+.idea/workspace.xml
+
+# OS files
+Thumbs.db
+Desktop.ini
