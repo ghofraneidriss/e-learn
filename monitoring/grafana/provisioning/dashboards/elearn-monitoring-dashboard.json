@@ -1,0 +1,229 @@
+{
+  "id": null,
+  "uid": "elearn-monitoring-overview",
+  "title": "E-Learn Monitoring Overview",
+  "tags": [
+    "e-learn",
+    "prometheus",
+    "grafana"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "annotations": {
+    "list": []
+  },
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Service UP / DOWN",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "up{job=~\"api-gateway|evaluation|config-server|eureka-server|cours\"}",
+          "instant": true,
+          "legendFormat": "{{job}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP Request Rate",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"api-gateway\"}[5m]))",
+          "legendFormat": "api-gateway"
+        },
+        {
+          "refId": "B",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"evaluation\"}[5m]))",
+          "legendFormat": "evaluation"
+        },
+        {
+          "refId": "C",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"config-server\"}[5m]))",
+          "legendFormat": "config-server"
+        },
+        {
+          "refId": "D",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"eureka-server\"}[5m]))",
+          "legendFormat": "eureka-server"
+        },
+        {
+          "refId": "E",
+          "expr": "sum(rate(cours_http_requests_total{job=\"cours\"}[5m]))",
+          "legendFormat": "cours"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Usage",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (job) (process_resident_memory_bytes{job=~\"api-gateway|evaluation|config-server|eureka-server|cours\"})",
+          "legendFormat": "{{job}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "5xx Error Rate",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"api-gateway\",status=~\"5..\"}[5m]))",
+          "legendFormat": "api-gateway"
+        },
+        {
+          "refId": "B",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"evaluation\",status=~\"5..\"}[5m]))",
+          "legendFormat": "evaluation"
+        },
+        {
+          "refId": "C",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"config-server\",status=~\"5..\"}[5m]))",
+          "legendFormat": "config-server"
+        },
+        {
+          "refId": "D",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"eureka-server\",status=~\"5..\"}[5m]))",
+          "legendFormat": "eureka-server"
+        },
+        {
+          "refId": "E",
+          "expr": "sum(rate(cours_http_requests_total{status=~\"5..\"}[5m]))",
+          "legendFormat": "cours"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    }
+  ]
+}

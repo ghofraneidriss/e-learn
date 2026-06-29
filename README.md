@@ -30,6 +30,17 @@ docker compose up -d
 - Config Server: `8888`
 - Keycloak: `8081`
 - RabbitMQ Management: `15672`
+- Prometheus: `9090`
+- Grafana: `3000`
+
+## Documentation et monitoring
+
+- Swagger centralisé via le gateway: `http://localhost:9000/swagger-ui/index.html`
+- Docs directes:
+  - Cours: `http://localhost:8080/cours/api-docs`
+  - Evaluation: `http://localhost:8082/swagger-ui/index.html`
+- Prometheus: `http://localhost:9090`
+- Grafana: `http://localhost:3000` avec `admin / admin`
 
 ## Compte Keycloak
 

@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const promClient = require('prom-client');
+const swaggerUi = require('swagger-ui-express');
 const { initDb } = require('./db');
 const { createPublisher } = require('./rabbitmq');
 const { createEurekaClient } = require('./eureka');
@@ -15,9 +17,198 @@ const {
 
 const app = express();
 const port = Number(process.env.PORT || 8080);
+const register = new promClient.Registry();
+
+register.setDefaultLabels({
+  service: 'cours',
+});
+
+promClient.collectDefaultMetrics({ register });
+
+const httpRequestsTotal = new promClient.Counter({
+  name: 'cours_http_requests_total',
+  help: 'Total number of HTTP requests handled by the cours service',
+  labelNames: ['method', 'route', 'status'],
+  registers: [register],
+});
+
+const httpRequestDurationMs = new promClient.Histogram({
+  name: 'cours_http_request_duration_ms',
+  help: 'HTTP request duration in milliseconds for the cours service',
+  labelNames: ['method', 'route', 'status'],
+  buckets: [10, 25, 50, 100, 250, 500, 1000, 2500],
+  registers: [register],
+});
+
+const swaggerSpec = {
+  openapi: '3.0.3',
+  info: {
+    title: 'E-Learn Cours API',
+    version: '1.0.0',
+    description: 'API du microservice Cours pour le projet E-Learn.',
+  },
+  servers: [
+    { url: 'http://localhost:8080', description: 'Cours service direct' },
+    { url: 'http://localhost:9000', description: 'Via API Gateway' },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+    },
+  },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  paths: {
+    '/cours': {
+      get: {
+        summary: 'Lister les cours',
+        responses: {
+          200: {
+            description: 'Liste des cours',
+          },
+        },
+      },
+      post: {
+        summary: 'Créer un cours',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['title'],
+                properties: {
+                  title: { type: 'string', example: 'Architecture Microservices' },
+                  description: { type: 'string', example: 'Cours de test' },
+                  duration: { type: 'integer', example: 12 },
+                  level: { type: 'string', example: 'BEGINNER' },
+                  teacherName: { type: 'string', example: 'Aziz' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: 'Cours créé',
+          },
+          400: {
+            description: 'Données invalides',
+          },
+        },
+      },
+    },
+    '/cours/{id}': {
+      get: {
+        summary: 'Récupérer un cours par id',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer' },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Cours trouvé',
+          },
+          404: {
+            description: 'Cours introuvable',
+          },
+        },
+      },
+      put: {
+        summary: 'Mettre à jour un cours',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer' },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Cours mis à jour',
+          },
+          400: {
+            description: 'Données invalides',
+          },
+          404: {
+            description: 'Cours introuvable',
+          },
+        },
+      },
+      delete: {
+        summary: 'Supprimer un cours',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer' },
+          },
+        ],
+        responses: {
+          204: {
+            description: 'Cours supprimé',
+          },
+          404: {
+            description: 'Cours introuvable',
+          },
+        },
+      },
+    },
+    '/cours/health': {
+      get: {
+        summary: 'Vérifier l’état du service',
+        responses: {
+          200: {
+            description: 'Service en bonne santé',
+          },
+        },
+      },
+    },
+  },
+};
 
 app.use(cors());
 app.use(express.json());
+app.use((req, res, next) => {
+  const startedAt = process.hrtime.bigint();
+  res.on('finish', () => {
+    const route = req.route?.path || req.path || 'unknown';
+    const status = String(res.statusCode);
+    const method = req.method;
+    const durationMs = Number(process.hrtime.bigint() - startedAt) / 1_000_000;
+
+    httpRequestsTotal.inc({ method, route, status });
+    httpRequestDurationMs.observe({ method, route, status }, durationMs);
+  });
+  next();
+});
+
+app.use(
+  '/cours/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  })
+);
+
+app.get('/cours/v3/api-docs', (_req, res) => {
+  res.json(swaggerSpec);
+});
 
 async function safePublish(routingKey, payload) {
   try {
@@ -84,6 +275,15 @@ async function registerWithEureka(maxAttempts = 30, delayMs = 2000) {
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'UP', service: 'cours' });
+});
+
+app.get('/cours/health', (_req, res) => {
+  res.json({ status: 'UP', service: 'cours' });
+});
+
+app.get('/cours/metrics', async (_req, res) => {
+  res.setHeader('Content-Type', register.contentType);
+  res.end(await register.metrics());
 });
 
 app.get('/cours', async (_req, res) => {

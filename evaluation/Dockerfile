@@ -7,7 +7,7 @@ RUN mvn -DskipTests package
 FROM eclipse-temurin:17-jre
 
 WORKDIR /app
-COPY --from=build /workspace/target/*.jar app.jar
+COPY --from=build /workspace/target/evaluation-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8082
 

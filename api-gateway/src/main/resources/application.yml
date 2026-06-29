@@ -12,6 +12,16 @@ spring:
         locator:
           enabled: true
       routes:
+        - id: cours-openapi
+          uri: lb://COURS
+          predicates:
+            - Path=/cours/v3/api-docs,/cours/v3/api-docs/**
+        - id: evaluation-openapi
+          uri: lb://EVALUATION
+          predicates:
+            - Path=/evaluation/v3/api-docs,/evaluation/v3/api-docs/**
+          filters:
+            - StripPrefix=1
         - id: cours-service
           uri: lb://COURS
           predicates:
@@ -25,6 +35,8 @@ spring:
           '[/**]':
             allowedOrigins:
               - http://localhost:4200
+              - http://localhost:8080
+              - http://localhost:9000
             allowedMethods:
               - GET
               - POST
@@ -39,6 +51,24 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8081/realms/elearn-realm/protocol/openid-connect/certs
+springdoc:
+  api-docs:
+    path: /gateway-api-docs
+  swagger-ui:
+    urls:
+      - name: Cours service
+        url: /cours/v3/api-docs
+      - name: Evaluation service
+        url: /evaluation/v3/api-docs
+    urls-primary-name: Cours service
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
 
 eureka:
   client:
